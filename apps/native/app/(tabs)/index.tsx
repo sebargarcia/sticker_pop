@@ -26,7 +26,7 @@ export default function Home() {
         <StickerPopButton
           title="Create Sticker"
           icon="sparkles"
-          onPress={() => router.push("/(drawer)/(tabs)/create")}
+          onPress={() => router.push("/(tabs)/create")}
           className="mt-[18px] w-full"
         />
       </View>

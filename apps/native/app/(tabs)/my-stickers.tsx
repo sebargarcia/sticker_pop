@@ -120,7 +120,7 @@ export default function MyStickersScreen() {
 					<StickerPopButton
 						title="Create Sticker"
 						icon="sparkles"
-						onPress={() => router.push("/(drawer)/(tabs)/create")}
+						            onPress={() => router.push("/(tabs)/create")}
 						className="mt-4 w-full"
 					/>
 				</View>
