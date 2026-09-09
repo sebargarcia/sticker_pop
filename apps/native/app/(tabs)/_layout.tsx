@@ -29,6 +29,7 @@ export default function TabLayout() {
         name="create"
         options={{
           title: "Create",
+          tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
             <View
               className={cn(
