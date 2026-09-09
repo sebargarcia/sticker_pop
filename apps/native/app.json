@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "sticker_pop",
+    "name": "StickerPop",
     "slug": "sticker_pop",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -28,6 +28,22 @@
     },
     "plugins": [
       "expo-router",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow StickerPop to access your photos to turn them into stickers.",
+          "cameraPermission": "Allow StickerPop to use your camera to take photos for stickers."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow StickerPop to save stickers to your photos.",
+          "savePhotosPermission": "Allow StickerPop to save stickers to your photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
       [
         "expo-splash-screen",
         {
