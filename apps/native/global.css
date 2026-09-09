@@ -1,3 +1,25 @@
 @import "tailwindcss";
 @import "uniwind";
 @import "heroui-native/styles";
+
+@theme {
+  /* StickerPop brand palette (see docs/StickerPop — Mobile App Design & Development Prompt.md) */
+  --color-pop-yellow: #ffd600;
+  --color-pop-navy: #0b1533;
+  --color-pop-cyan: #00b8e6;
+  --color-pop-green: #34c759;
+  --color-pop-pink: #ff4d8d;
+  --color-pop-orange: #ff9f1c;
+  --color-pop-bg: #f5f7fa;
+  --color-pop-sheet: #fff8dc;
+
+  /* Poppins (loaded via @expo-google-fonts/poppins in app/_layout.tsx).
+     Weight is baked into the family — use these INSTEAD of font-bold etc.,
+     which break custom fonts on Android when combined with fontFamily. */
+  --font-poppins-regular: "Poppins_400Regular";
+  --font-poppins-medium: "Poppins_500Medium";
+  --font-poppins-semibold: "Poppins_600SemiBold";
+  --font-poppins-bold: "Poppins_700Bold";
+  --font-poppins-extrabold: "Poppins_800ExtraBold";
+  --font-poppins-black: "Poppins_900Black";
+}
