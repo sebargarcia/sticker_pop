@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Localization from "expo-localization";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -10,10 +9,9 @@ export type AppLanguage = "es" | "en";
 
 const LANGUAGE_KEY = "stickerpop.language";
 
-/** Spanish default; English only when the device itself is English. */
+/** Spanish, always (explicit product decision) — English strings exist for a future toggle. */
 function deviceLanguage(): AppLanguage {
-  const code = Localization.getLocales()[0]?.languageCode ?? "es";
-  return code.toLowerCase().startsWith("en") ? "en" : "es";
+	return "es";
 }
 
 if (!i18n.isInitialized) {
