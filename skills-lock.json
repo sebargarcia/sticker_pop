@@ -1,0 +1,65 @@
+{
+	"version": 1,
+	"skills": {
+		"expo-data-fetching": {
+			"source": "expo/skills",
+			"sourceType": "github",
+			"skillPath": "plugins/expo/skills/expo-data-fetching/SKILL.md",
+			"computedHash": "f09e886fe2bd6dcfaf6094a7ca0d8029c4f4a8cfb3264b5cc23d4a21cb4b2cbe"
+		},
+		"expo-dev-client": {
+			"source": "expo/skills",
+			"sourceType": "github",
+			"skillPath": "plugins/expo/skills/expo-dev-client/SKILL.md",
+			"computedHash": "41496a5bb64bb753640c3a7de9d58fce81330fbba61f822dabbc04b5f1d7447d"
+		},
+		"expo-native-ui": {
+			"source": "expo/skills",
+			"sourceType": "github",
+			"skillPath": "plugins/expo/skills/expo-native-ui/SKILL.md",
+			"computedHash": "83cb03d9d8629bc15f4be47c5c326151bc2b1e285fd51bd32c211ebb24e5ff8a"
+		},
+		"expo-overview": {
+			"source": "expo/skills",
+			"sourceType": "github",
+			"skillPath": "plugins/expo/skills/expo-overview/SKILL.md",
+			"computedHash": "1bd5b2833aaba7c2c88527bfea2b5dc70470f96901c659b04ddebc4ba7e9da52"
+		},
+		"expo-router": {
+			"source": "expo/skills",
+			"sourceType": "github",
+			"skillPath": "plugins/expo/skills/expo-router/SKILL.md",
+			"computedHash": "9dfdcd75e5f473b468aa3decc0ba1ac7af6641a0a777611ef7173cc4232ddb7c"
+		},
+		"heroui-native": {
+			"source": "heroui-inc/heroui",
+			"sourceType": "github",
+			"skillPath": "skills/heroui-native/SKILL.md",
+			"computedHash": "8f8fc3913fd585563795ce27a534428024f794621114f0c83039bc3c983dabdd"
+		},
+		"shadcn": {
+			"source": "shadcn/ui",
+			"sourceType": "github",
+			"skillPath": "skills/shadcn/SKILL.md",
+			"computedHash": "f615de216e085a84e31593ad0fa9062232adc40cd87b7c7ab2b8e49abf6500be"
+		},
+		"turborepo": {
+			"source": "vercel/turborepo",
+			"sourceType": "github",
+			"skillPath": "skills/turborepo/SKILL.md",
+			"computedHash": "3242b13be3801d1149d9de32cf99852d9673de5678a23acc89a3b6a6e444dda8"
+		},
+		"vercel-react-best-practices": {
+			"source": "vercel-labs/agent-skills",
+			"sourceType": "github",
+			"skillPath": "skills/react-best-practices/SKILL.md",
+			"computedHash": "3219a1944e404ffc14d1d9d6aef6dd2e3855b81387ee0a044ccbfe14d34c2357"
+		},
+		"vercel-react-native-skills": {
+			"source": "vercel-labs/agent-skills",
+			"sourceType": "github",
+			"skillPath": "skills/react-native-skills/SKILL.md",
+			"computedHash": "2e9088a7333666d8c2833b8ff58bd51b955501c42b4c7244f72b4cbf22dafcc4"
+		}
+	}
+}

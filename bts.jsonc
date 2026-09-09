@@ -16,7 +16,12 @@
   "backend": "hono",
   "runtime": "workers",
   "frontend": ["tanstack-start", "native-uniwind"],
-  "addons": ["biome", "husky", "turborepo"],
+  "addons": [
+		"biome",
+		"husky",
+		"turborepo",
+		"skills"
+	],
   "examples": [],
   "auth": "better-auth",
   "payments": "none",
