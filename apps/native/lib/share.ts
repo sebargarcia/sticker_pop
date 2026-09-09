@@ -1,6 +1,5 @@
 import * as ExpoSharing from "expo-sharing";
 import { Alert } from "react-native";
-import Share, { Social } from "react-native-share";
 
 import i18n from "./i18n";
 
@@ -13,15 +12,18 @@ function isCancelError(e: unknown): boolean {
 
 /**
  * Sends a local image file straight to WhatsApp (contact picker opens in app).
- * Falls back to the system share sheet when WhatsApp is missing or the direct
- * share fails — WhatsApp still appears there if installed.
- * NOTE: requires a dev build (react-native-share is a native module, not in Expo Go).
+ * Falls back to the system share sheet when WhatsApp is missing, the direct
+ * share fails, or the native module isn't in this build (lazy import keeps the
+ * bundle bootable on binaries without react-native-share, e.g. Expo Go).
  */
 export async function shareImageToWhatsApp(
 	fileUri: string,
 	message?: string,
 ): Promise<"shared" | "cancelled"> {
 	try {
+		// Lazy: importing react-native-share at the top level would red-screen
+		// the whole bundle on binaries where its native module isn't registered.
+		const { default: Share, Social } = await import("react-native-share");
 		await Share.shareSingle({
 			title: i18n.t("share.whatsappTitle"),
 			message: message ?? i18n.t("share.defaultMessage"),
