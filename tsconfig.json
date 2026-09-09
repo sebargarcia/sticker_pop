@@ -1,0 +1,3 @@
+{
+  "extends": "@sticker_pop/config/tsconfig.base.json"
+}

@@ -1,0 +1,4 @@
+{
+  "extends": "@sticker_pop/config/tsconfig.base.json",
+  "include": ["alchemy.run.ts"]
+}
