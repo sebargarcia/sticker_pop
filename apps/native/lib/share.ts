@@ -2,9 +2,9 @@ import * as ExpoSharing from "expo-sharing";
 import { Alert } from "react-native";
 import Share, { Social } from "react-native-share";
 
-export const WHATSAPP_GREEN = "#25D366";
+import i18n from "./i18n";
 
-const DEFAULT_MESSAGE = "Made with StickerPop";
+export const WHATSAPP_GREEN = "#25D366";
 
 function isCancelError(e: unknown): boolean {
   const msg = (e instanceof Error ? e.message : String(e)).toLowerCase();
@@ -18,22 +18,22 @@ function isCancelError(e: unknown): boolean {
  * NOTE: requires a dev build (react-native-share is a native module, not in Expo Go).
  */
 export async function shareImageToWhatsApp(
-  fileUri: string,
-  message: string = DEFAULT_MESSAGE,
+	fileUri: string,
+	message?: string,
 ): Promise<"shared" | "cancelled"> {
-  try {
-    await Share.shareSingle({
-      title: "Share sticker via WhatsApp",
-      message,
-      url: fileUri,
+	try {
+		await Share.shareSingle({
+			title: i18n.t("share.whatsappTitle"),
+			message: message ?? i18n.t("share.defaultMessage"),
+			url: fileUri,
 			type: "image/png",
 			social: Social.Whatsapp,
 		});
-    return "shared";
-  } catch (e) {
-    if (isCancelError(e)) return "cancelled";
-    return shareImageFile(fileUri, "Share sticker");
-  }
+		return "shared";
+	} catch (e) {
+		if (isCancelError(e)) return "cancelled";
+		return shareImageFile(fileUri, i18n.t("share.whatsappTitle"));
+	}
 }
 
 /** Generic system share sheet for a local image file. */
@@ -42,16 +42,16 @@ export async function shareImageFile(
   dialogTitle: string,
 ): Promise<"shared" | "cancelled"> {
   try {
-    const available = await ExpoSharing.isAvailableAsync();
-    if (!available) {
-      Alert.alert("Sharing unavailable", "Sharing is not available on this device.");
-      return "cancelled";
-    }
-    await ExpoSharing.shareAsync(fileUri, { mimeType: "image/png", dialogTitle });
-    return "shared";
-  } catch (e) {
-    if (isCancelError(e)) return "cancelled";
-    Alert.alert("Share failed", e instanceof Error ? e.message : "Could not share.");
-    return "cancelled";
-  }
+		const available = await ExpoSharing.isAvailableAsync();
+		if (!available) {
+			Alert.alert(i18n.t("share.unavailableTitle"), i18n.t("share.unavailableMessage"));
+			return "cancelled";
+		}
+		await ExpoSharing.shareAsync(fileUri, { mimeType: "image/png", dialogTitle });
+		return "shared";
+	} catch (e) {
+		if (isCancelError(e)) return "cancelled";
+		Alert.alert(i18n.t("share.failedTitle"), i18n.t("share.failedMessage"));
+		return "cancelled";
+	}
 }

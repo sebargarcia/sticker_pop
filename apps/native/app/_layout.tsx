@@ -1,4 +1,5 @@
 import "@/global.css";
+import "@/lib/i18n";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
@@ -16,6 +17,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { AppThemeProvider } from "@/contexts/app-theme-context";
+import { loadSavedLanguage } from "@/lib/i18n";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,11 +35,15 @@ export default function Layout() {
     Poppins_900Black,
   });
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+	useEffect(() => {
+		if (fontsLoaded) {
+			SplashScreen.hideAsync();
+		}
+	}, [fontsLoaded]);
+
+	useEffect(() => {
+		loadSavedLanguage();
+	}, []);
 
   if (!fontsLoaded) {
     return null;

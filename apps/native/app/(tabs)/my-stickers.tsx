@@ -11,19 +11,21 @@ import {
 	Text,
 	View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StickerPopButton } from "@/components/sticker-pop-button";
+import { emotionLabel } from "@/lib/i18n";
 import { shareImageFile, shareImageToWhatsApp } from "@/lib/share";
 import {
 	deleteSticker,
 	listSavedStickers,
 	type SavedSticker,
 } from "@/lib/stickers-store";
-import { StickerPopCopy } from "@/lib/theme";
 
 export default function MyStickersScreen() {
 	const router = useRouter();
+	const { t } = useTranslation();
 	const insets = useSafeAreaInsets();
 	const [stickers, setStickers] = useState<SavedSticker[]>([]);
 	const [refreshing, setRefreshing] = useState(false);
@@ -48,12 +50,12 @@ export default function MyStickersScreen() {
 
 	function confirmDelete(sticker: SavedSticker) {
 		Alert.alert(
-			"Delete sticker?",
-			`"${sticker.emotion}" will be removed from My Stickers.`,
+			t("myStickers.deleteTitle"),
+			t("myStickers.deleteMessage", { emotion: emotionLabel(sticker.emotion) }),
 			[
-				{ text: "Cancel", style: "cancel" },
+				{ text: t("myStickers.cancel"), style: "cancel" },
 				{
-					text: "Delete",
+					text: t("myStickers.delete"),
 					style: "destructive",
 					onPress: async () => {
 						const rest = await deleteSticker(sticker.id);
@@ -66,11 +68,17 @@ export default function MyStickersScreen() {
 	}
 
 	async function handleShare(sticker: SavedSticker) {
-		await shareImageFile(sticker.fileUri, `Share your ${sticker.emotion} sticker`);
+		await shareImageFile(
+			sticker.fileUri,
+			t("myStickers.shareDialog", { emotion: emotionLabel(sticker.emotion) }),
+		);
 	}
 
 	async function handleShareToWhatsApp(sticker: SavedSticker) {
-		await shareImageToWhatsApp(sticker.fileUri, `My ${sticker.emotion} sticker!`);
+		await shareImageToWhatsApp(
+			sticker.fileUri,
+			t("share.stickerMessage", { emotion: emotionLabel(sticker.emotion) }),
+		);
 	}
 
 	return (
@@ -87,27 +95,27 @@ export default function MyStickersScreen() {
 			}
 		>
 			<Text className="text-center font-poppins-black text-[28px] text-pop-navy">
-				My Stickers
+				{t("myStickers.title")}
 			</Text>
 			<Text className="mt-1 mb-4 text-center font-poppins-semibold text-gray-500">
 				{stickers.length === 0
-					? "That deserves a sticker."
-					: `${stickers.length} sticker${stickers.length === 1 ? "" : "s"} created`}
+					? t("myStickers.subtitleEmpty")
+					: t("myStickers.count", { count: stickers.length })}
 			</Text>
 
 			{stickers.length === 0 ? (
 				<View className="items-center gap-2 rounded-[28px] border-2 border-pop-navy bg-white p-8 shadow">
 					<Text className="text-5xl">🎨</Text>
 					<Text className="mt-2 font-poppins-extrabold text-pop-navy text-xl">
-						{StickerPopCopy.emptyLibrary}
+						{t("myStickers.emptyTitle")}
 					</Text>
 					<Text className="font-poppins-semibold text-gray-500">
-						{StickerPopCopy.emptyLibrarySub}
+						{t("myStickers.emptySubtitle")}
 					</Text>
 					<StickerPopButton
-						title="Create Sticker"
+						title={t("myStickers.createCta")}
 						icon="sparkles"
-						            onPress={() => router.push("/(tabs)/create")}
+						onPress={() => router.push("/(tabs)/create")}
 						className="mt-4 w-full"
 					/>
 				</View>
@@ -126,7 +134,7 @@ export default function MyStickersScreen() {
 								/>
 							</Pressable>
 							<Text className="mt-1.5 text-center font-poppins-bold text-pop-navy text-xs">
-								{sticker.emotion}
+								{emotionLabel(sticker.emotion)}
 							</Text>
 						</View>
 					))}
@@ -152,20 +160,20 @@ export default function MyStickersScreen() {
 							/>
 						) : null}
 						<Text className="font-poppins-extrabold text-lg text-pop-navy">
-							{preview?.emotion}
+							{preview ? emotionLabel(preview.emotion) : ""}
 						</Text>
 						<StickerPopButton
-							title="WhatsApp"
+							title={t("myStickers.whatsapp")}
 							icon="logo-whatsapp"
 							variant="whatsapp"
 							onPress={() => {
 								if (preview) handleShareToWhatsApp(preview);
 							}}
-							className="flex-1"
+							className="w-full"
 						/>
 						<View className="w-full flex-row gap-3">
 							<StickerPopButton
-								title="Share"
+								title={t("myStickers.share")}
 								icon="share-outline"
 								onPress={() => {
 									if (preview) handleShare(preview);
@@ -177,7 +185,7 @@ export default function MyStickersScreen() {
 									if (preview) confirmDelete(preview);
 								}}
 								className="h-[54px] w-[54px] items-center justify-center rounded-full border-2 border-pop-navy bg-white active:opacity-80"
-								accessibilityLabel="Delete sticker"
+								accessibilityLabel={t("myStickers.delete")}
 							>
 								<Ionicons name="trash-outline" size={22} color="#0B1533" />
 							</Pressable>

@@ -62,6 +62,23 @@ Rules for all new/edited UI code:
    "Poppins_700Bold"` directly. Scaffold leftovers (sign-in, modal) still use system
    weights — migrate them to `font-poppins-*` when touched.
 
+## i18n (Spanish default, English available)
+
+- `lib/i18n.ts` + `lib/locales/es.json` / `en.json`, powered by `i18next` +
+  `react-i18next` + `expo-localization`. Language resolves at launch: English only when
+  the device locale is English, **Spanish otherwise** (default + fallback `es`).
+- In components/screens: `const { t } = useTranslation()` and `t("create.title")`.
+  Outside React (`lib/share.ts`, `lib/gemini.ts`): `import i18n from "./i18n"` then
+  `i18n.t(...)` — init is synchronous on import, always safe to call.
+- Emotion keys (`Happy`, `Sad`, ...) stay English — they feed the Gemini prompts and
+  filenames. Display them only via `emotionLabel(key)` from `lib/i18n.ts`. Same rule for
+  style ids: `STICKER_STYLES` carries `labelKey`, translated as `t('styles.' + labelKey)`.
+- Technical error text (exception messages) stays untranslated; all user-facing copy
+  lives in the locale files under `tabs.*`, `home.*`, `create.*`, `grid.*`, `sheet.*`,
+  `myStickers.*`, `share.*`, `styles.*`, `emotions.*`, `gemini.*`.
+- `setAppLanguage` / `loadSavedLanguage` persist a manual choice (loaded in
+  `app/_layout.tsx`) — ready for a future settings toggle; there is no toggle UI yet.
+
 ## Generation API (Gemini)
 
 - Model `gemini-2.5-flash-image-preview` via REST `generateContent?key=`, direct from the

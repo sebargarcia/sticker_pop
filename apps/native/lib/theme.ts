@@ -21,10 +21,3 @@ export const StickerPopColors = {
 	lightGray: "#E8ECF1",
 	muted: "#6B7280",
 } as const;
-
-export const StickerPopCopy = {
-	tagline: "Turn your ideas into funny stickers.",
-	subtagline: "Create, customize and share stickers in seconds.",
-	emptyLibrary: "No stickers yet!",
-	emptyLibrarySub: "Let's make your first one.",
-} as const;

@@ -1,7 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import type { GeneratedSticker } from "@/lib/gemini";
+import { emotionLabel } from "@/lib/i18n";
 
 interface Props {
 	stickers: GeneratedSticker[];
@@ -16,6 +18,7 @@ export function StickerGrid({
 	onRegenerate,
 	onSave,
 }: Props) {
+	const { t } = useTranslation();
 	if (stickers.length === 0) return null;
 	return (
 		<View className="-mx-1.5 flex-row flex-wrap">
@@ -25,10 +28,10 @@ export function StickerGrid({
 						<View className="aspect-square w-full items-center justify-center rounded-[18px] border-2 border-[#C9CDD3] border-dashed bg-[#F1F2F4]">
 							<ActivityIndicator size="large" color="#0B1533" />
 							<Text className="mt-2 font-poppins-bold text-pop-navy">
-								Generating
+								{t("grid.generating")}
 							</Text>
 							<Text className="font-poppins-regular text-pop-navy">
-								{sticker.emotion}
+								{emotionLabel(sticker.emotion)}
 							</Text>
 						</View>
 					) : sticker.imageUrl ? (
@@ -46,7 +49,9 @@ export function StickerGrid({
 								<Pressable
 									onPress={() => onSave(sticker)}
 									className="p-2"
-									accessibilityLabel={`Save ${sticker.emotion} sticker`}
+									accessibilityLabel={t("grid.saveAction", {
+										emotion: emotionLabel(sticker.emotion),
+									})}
 								>
 									<Ionicons name="download-outline" size={18} color="#0B1533" />
 								</Pressable>
@@ -54,30 +59,32 @@ export function StickerGrid({
 								<Pressable
 									onPress={() => onRegenerate(sticker.emotion)}
 									className="p-2"
-									accessibilityLabel={`Regenerate ${sticker.emotion} sticker`}
+									accessibilityLabel={t("grid.regenerateAction", {
+										emotion: emotionLabel(sticker.emotion),
+									})}
 								>
 									<Ionicons name="refresh-outline" size={18} color="#0B1533" />
 								</Pressable>
 							</View>
 							<Text className="mt-2 text-center font-poppins-semibold text-pop-navy">
-								{sticker.emotion}
+								{emotionLabel(sticker.emotion)}
 							</Text>
 						</View>
 					) : (
 						<View className="aspect-square w-full items-center justify-center rounded-[18px] border-2 border-[#F3B7B3] border-dashed bg-[#FFF1F0] p-4">
 							<Ionicons name="alert-circle-outline" size={32} color="#D92D20" />
 							<Text className="mt-1 font-poppins-bold text-[#D92D20]">
-								Failed
+								{t("grid.failed")}
 							</Text>
 							<Text className="font-poppins-regular text-pop-navy">
-								{sticker.emotion}
+								{emotionLabel(sticker.emotion)}
 							</Text>
 							<Pressable
 								onPress={() => onRegenerate(sticker.emotion)}
 								className="mt-2 rounded-full bg-[#D92D20] px-3.5 py-1.5"
 							>
 								<Text className="font-poppins-bold text-white text-xs">
-									Retry
+									{t("grid.retry")}
 								</Text>
 							</Pressable>
 						</View>

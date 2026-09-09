@@ -1,8 +1,10 @@
 import { forwardRef } from "react";
 import { Image, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import type { GeneratedSticker } from "@/lib/gemini";
+import { emotionLabel } from "@/lib/i18n";
 
 interface Props {
 	stickers: GeneratedSticker[];
@@ -17,6 +19,7 @@ interface Props {
  */
 export const StickerSheetView = forwardRef<ViewShotRef, Props>(
 	({ stickers }, ref) => {
+		const { t } = useTranslation();
 		const ready = stickers.filter((s) => s.imageUrl).slice(0, 8);
 		return (
 			<ViewShot
@@ -29,7 +32,7 @@ export const StickerSheetView = forwardRef<ViewShotRef, Props>(
 						STICKERPOP
 					</Text>
 					<Text className="mb-3 text-center font-poppins-semibold text-gray-500">
-						Small moments. Big laughs.
+						{t("sheet.subtitle")}
 					</Text>
 					<View className="-mx-1.5 flex-row flex-wrap">
 						{ready.map((s) => (
@@ -39,19 +42,19 @@ export const StickerSheetView = forwardRef<ViewShotRef, Props>(
 									className="aspect-square w-full rounded-[14px] border-2 border-white bg-white"
 								/>
 								<Text className="mt-1 font-poppins-bold text-[11px] text-pop-navy">
-									{s.emotion}
+									{emotionLabel(s.emotion)}
 								</Text>
 							</View>
 						))}
 					</View>
-					<View className="mt-3 items-center rounded-[14px] bg-white p-3">
-						<Text className="font-poppins-extrabold text-base text-pop-navy">
-							Made with StickerPop
-						</Text>
-						<Text className="font-poppins-regular text-gray-500 text-xs">
-							Create. Share. Stick.
-						</Text>
-					</View>
+				<View className="mt-3 items-center rounded-[14px] bg-white p-3">
+					<Text className="font-poppins-extrabold text-pop-navy text-base">
+						{t("sheet.footerBold")}
+					</Text>
+					<Text className="font-poppins-regular text-gray-500 text-xs">
+						{t("sheet.footerSmall")}
+					</Text>
+				</View>
 				</View>
 			</ViewShot>
 		);

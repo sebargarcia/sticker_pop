@@ -1,5 +1,6 @@
 import { env } from "@sticker_pop/env/native";
 
+import i18n from "./i18n";
 import type { StickerStyleId } from "./sticker-styles";
 
 export interface GeneratedSticker {
@@ -22,9 +23,7 @@ const MODEL = "gemini-2.5-flash-image-preview";
 function apiUrl() {
 	const key = env.EXPO_PUBLIC_GEMINI_API_KEY;
 	if (!key) {
-		throw new Error(
-			"Missing EXPO_PUBLIC_GEMINI_API_KEY. Add it to apps/native/.env (get one at https://aistudio.google.com).",
-		);
+		throw new Error(i18n.t("gemini.missingKey"));
 	}
 	return `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`;
 }

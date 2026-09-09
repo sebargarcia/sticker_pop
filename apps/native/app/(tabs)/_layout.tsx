@@ -1,12 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { StyleSheet, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { cn } from "heroui-native";
 
 import { StickerPopColors } from "@/lib/theme";
 
 export default function TabLayout() {
-  return (
+	const { t } = useTranslation();
+	return (
     <Tabs
       screenOptions={{
         headerShown: false,
@@ -16,19 +18,19 @@ export default function TabLayout() {
         tabBarLabelStyle: styles.tabLabel,
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
+		<Tabs.Screen
+			name="index"
+			options={{
+				title: t("tabs.home"),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="create"
-        options={{
-          title: "Create",
+		<Tabs.Screen
+			name="create"
+			options={{
+				title: t("tabs.create"),
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused }) => (
             <View
@@ -46,10 +48,10 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="my-stickers"
-        options={{
-          title: "My Stickers",
+		<Tabs.Screen
+			name="my-stickers"
+			options={{
+				title: t("tabs.myStickers"),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="grid" size={size} color={color} />
           ),

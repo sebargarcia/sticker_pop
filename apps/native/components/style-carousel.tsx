@@ -1,5 +1,6 @@
 import { cn } from "heroui-native";
 import { FlatList, Image, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { STICKER_STYLES, type StickerStyleId } from "@/lib/sticker-styles";
 
@@ -9,10 +10,11 @@ interface Props {
 }
 
 export function StyleCarousel({ selected, onSelect }: Props) {
+	const { t } = useTranslation();
 	return (
 		<View>
 			<Text className="mb-3 text-center font-poppins-extrabold text-pop-navy text-xl">
-				Choose a style
+				{t("styles.heading")}
 			</Text>
 			<FlatList
 				data={STICKER_STYLES}
@@ -49,7 +51,7 @@ export function StyleCarousel({ selected, onSelect }: Props) {
 										: "font-poppins-semibold text-gray-500",
 								)}
 							>
-								{item.label}
+								{t(`styles.${item.labelKey}`)}
 							</Text>
 						</Pressable>
 					);

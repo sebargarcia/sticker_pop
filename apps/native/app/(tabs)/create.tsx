@@ -12,6 +12,7 @@ import {
 	Text,
 	View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { ViewShotRef } from "react-native-view-shot";
 import { StickerGrid } from "@/components/sticker-grid";
@@ -25,12 +26,14 @@ import {
 	type SourcePhoto,
 } from "@/lib/gemini";
 import { dataUrlToFile, uriToSourcePhoto } from "@/lib/image-utils";
+import { emotionLabel } from "@/lib/i18n";
 import { shareImageFile, shareImageToWhatsApp } from "@/lib/share";
 import { STICKER_EMOTIONS, type StickerStyleId } from "@/lib/sticker-styles";
 import { saveSticker } from "@/lib/stickers-store";
 
 export default function CreateScreen() {
 	const insets = useSafeAreaInsets();
+	const { t } = useTranslation();
 	const [photo, setPhoto] = useState<SourcePhoto | null>(null);
 	const [style, setStyle] = useState<StickerStyleId>("pop-art");
 	const [stickers, setStickers] = useState<GeneratedSticker[]>([]);
@@ -48,9 +51,7 @@ export default function CreateScreen() {
 				: await ImagePicker.requestMediaLibraryPermissionsAsync();
 			if (!permission.granted) {
 				setError(
-					useCamera
-						? "Camera permission is needed to take a photo."
-						: "Photo library permission is needed to pick an image.",
+					useCamera ? t("create.cameraPermission") : t("create.libraryPermission"),
 				);
 				return;
 			}
@@ -78,13 +79,13 @@ export default function CreateScreen() {
 			}
 			setStickers([]);
 		} catch (e) {
-			setError(e instanceof Error ? e.message : "Could not load that image.");
+			setError(e instanceof Error ? e.message : t("create.loadImageError"));
 		}
 	}
 
 	async function handleGenerate() {
 		if (!photo) {
-			setError("Please add a photo first.");
+			setError(t("create.needPhoto"));
 			return;
 		}
 		setIsLoading(true);
@@ -119,9 +120,7 @@ export default function CreateScreen() {
 				}
 			}
 		} catch (e) {
-			setError(
-				e instanceof Error ? e.message : "Something went wrong generating.",
-			);
+			setError(e instanceof Error ? e.message : t("create.generatingError"));
 		} finally {
 			setIsLoading(false);
 		}
@@ -141,7 +140,7 @@ export default function CreateScreen() {
 				emotion,
 				imageUrl: null as string | null,
 				isLoading: false,
-				error: e instanceof Error ? e.message : "Regeneration failed.",
+				error: e instanceof Error ? e.message : t("create.generatingError"),
 			}),
 		);
 		setStickers((prev) =>
@@ -165,10 +164,7 @@ export default function CreateScreen() {
 		try {
 			const { status } = await MediaLibrary.requestPermissionsAsync();
 			if (status !== "granted") {
-				Alert.alert(
-					"Permission needed",
-					"Allow photo access to save stickers.",
-				);
+				Alert.alert(t("create.permissionNeeded"), t("create.permissionMessage"));
 				return;
 			}
 			const fileUri = await dataUrlToFile(
@@ -177,11 +173,11 @@ export default function CreateScreen() {
 			);
 			await MediaLibrary.saveToLibraryAsync(fileUri);
 			await saveSticker({ emotion: sticker.emotion, styleId: style, fileUri });
-			Alert.alert("Nice one!", "Sticker created and saved to My Stickers.");
+			Alert.alert(t("create.savedTitle"), t("create.savedMessage"));
 		} catch (e) {
 			Alert.alert(
-				"Save failed",
-				e instanceof Error ? e.message : "Could not save sticker.",
+				t("share.failedTitle"),
+				e instanceof Error ? e.message : t("create.saveFailed"),
 			);
 		}
 	}
@@ -190,17 +186,14 @@ export default function CreateScreen() {
 		try {
 			const uri = await sheetRef.current?.capture?.();
 			if (!uri) {
-				Alert.alert(
-					"Not ready",
-					"Generate stickers first, then share the sheet.",
-				);
+				Alert.alert(t("share.notReadyTitle"), t("share.notReadyMessage"));
 				return null;
 			}
 			return uri;
 		} catch (e) {
 			Alert.alert(
-				"Share failed",
-				e instanceof Error ? e.message : "Could not share sheet.",
+				t("share.failedTitle"),
+				e instanceof Error ? e.message : t("share.failedMessage"),
 			);
 			return null;
 		}
@@ -209,13 +202,13 @@ export default function CreateScreen() {
 	async function handleShareSheet() {
 		const uri = await captureSheetUri();
 		if (!uri) return;
-		await shareImageFile(uri, "Share your StickerPop sheet");
+		await shareImageFile(uri, t("share.sheetDialog"));
 	}
 
 	async function handleShareSheetToWhatsApp() {
 		const uri = await captureSheetUri();
 		if (!uri) return;
-		await shareImageToWhatsApp(uri, "My StickerPop stickers!");
+		await shareImageToWhatsApp(uri, t("share.sheetMessage"));
 	}
 
 	async function handleShareStickerToWhatsApp(sticker: GeneratedSticker) {
@@ -225,11 +218,14 @@ export default function CreateScreen() {
 				sticker.imageUrl,
 				`sticker-${sticker.emotion.toLowerCase()}-${Date.now()}.png`,
 			);
-			await shareImageToWhatsApp(fileUri, `My ${sticker.emotion} sticker!`);
+			await shareImageToWhatsApp(
+				fileUri,
+				t("share.stickerMessage", { emotion: emotionLabel(sticker.emotion) }),
+			);
 		} catch (e) {
 			Alert.alert(
-				"Share failed",
-				e instanceof Error ? e.message : "Could not share sticker.",
+				t("share.failedTitle"),
+				e instanceof Error ? e.message : t("share.failedMessage"),
 			);
 		}
 	}
@@ -246,10 +242,10 @@ export default function CreateScreen() {
 			}}
 		>
 			<Text className="text-center font-poppins-black text-[28px] text-pop-navy">
-				Create a Sticker
+				{t("create.title")}
 			</Text>
 			<Text className="mt-1 mb-4 text-center font-poppins-semibold text-gray-500">
-				Let&apos;s make something funny.
+				{t("create.subtitle")}
 			</Text>
 
 			{/* Photo sources */}
@@ -260,7 +256,7 @@ export default function CreateScreen() {
 				>
 					<Ionicons name="camera-outline" size={22} color="#0B1533" />
 					<Text className="font-poppins-bold text-pop-navy">
-						{photo ? "Retake Photo" : "Take Photo"}
+						{photo ? t("create.retakePhoto") : t("create.takePhoto")}
 					</Text>
 				</Pressable>
 				<Pressable
@@ -269,7 +265,7 @@ export default function CreateScreen() {
 				>
 					<Ionicons name="cloud-upload-outline" size={22} color="#0B1533" />
 					<Text className="font-poppins-bold text-pop-navy">
-						{photo ? "Change Photo" : "Upload Photo"}
+						{photo ? t("create.changePhoto") : t("create.uploadPhoto")}
 					</Text>
 				</Pressable>
 			</View>
@@ -285,7 +281,7 @@ export default function CreateScreen() {
 				<View className="mt-4 items-center gap-2 rounded-[20px] border-2 border-[#C9CDD3] border-dashed bg-white p-6">
 					<Ionicons name="image-outline" size={40} color="#9AA0A8" />
 					<Text className="font-poppins-semibold text-gray-500">
-						Add a selfie or any photo to start
+						{t("create.addPhotoHint")}
 					</Text>
 				</View>
 			)}
@@ -295,7 +291,7 @@ export default function CreateScreen() {
 			</View>
 
 			<StickerPopButton
-				title={isLoading ? "Generating..." : "Create Stickers"}
+				title={isLoading ? t("create.generating") : t("create.generate")}
 				icon="sparkles"
 				loading={isLoading}
 				disabled={!photo || isLoading}
@@ -316,7 +312,7 @@ export default function CreateScreen() {
 				<View className="mt-4 flex-row items-center justify-center gap-2">
 					<ActivityIndicator color="#0B1533" />
 					<Text className="font-poppins-bold text-pop-navy">
-						Gemini is working its magic...
+						{t("create.magicMoment")}
 					</Text>
 				</View>
 			) : null}
@@ -332,7 +328,7 @@ export default function CreateScreen() {
 					{hasResults && !isLoading ? (
 						<View className="mt-4">
 							<StickerPopButton
-								title="View Sticker Sheet"
+								title={t("create.viewSheet")}
 								variant="secondary"
 								onPress={() => setShowSheet(true)}
 							/>
@@ -342,10 +338,10 @@ export default function CreateScreen() {
 			) : (
 				<View className="mt-5 items-center rounded-[20px] border-2 border-[#E8ECF1] bg-white p-6">
 					<Text className="font-poppins-extrabold text-base text-pop-navy">
-						Your stickers will appear here.
+						{t("create.emptyTitle")}
 					</Text>
 					<Text className="mt-1 font-poppins-regular text-gray-500">
-						Follow the steps to get started!
+						{t("create.emptySubtitle")}
 					</Text>
 				</View>
 			)}
@@ -370,10 +366,10 @@ export default function CreateScreen() {
 							/>
 						) : null}
 						<Text className="font-poppins-extrabold text-lg text-pop-navy">
-							{preview?.emotion}
+							{preview ? emotionLabel(preview.emotion) : ""}
 						</Text>
 						<StickerPopButton
-							title="Save to My Stickers"
+							title={t("create.saveToLibrary")}
 							icon="download-outline"
 							onPress={() => {
 								if (preview) handleSave(preview);
@@ -381,7 +377,7 @@ export default function CreateScreen() {
 							className="w-full"
 						/>
 						<StickerPopButton
-							title="Send via WhatsApp"
+							title={t("create.sendWhatsApp")}
 							icon="logo-whatsapp"
 							variant="whatsapp"
 							onPress={() => {
@@ -404,7 +400,7 @@ export default function CreateScreen() {
 					<View className="max-h-[90%] rounded-t-[28px] bg-white p-5">
 						<View className="mb-3 flex-row items-center justify-between">
 							<Text className="font-poppins-extrabold text-pop-navy text-xl">
-								Sticker Sheet
+								{t("create.sheetTitle")}
 							</Text>
 							<Pressable
 								onPress={() => setShowSheet(false)}
@@ -417,12 +413,12 @@ export default function CreateScreen() {
 						<StickerSheetView ref={sheetRef} stickers={stickers} />
 						<View className="mt-4 gap-3">
 							<StickerPopButton
-								title="Share Sheet"
+								title={t("create.shareSheet")}
 								icon="share-outline"
 								onPress={handleShareSheet}
 							/>
 							<StickerPopButton
-								title="Send via WhatsApp"
+								title={t("create.sendWhatsApp")}
 								icon="logo-whatsapp"
 								variant="whatsapp"
 								onPress={handleShareSheetToWhatsApp}
