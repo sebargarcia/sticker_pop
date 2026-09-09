@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
-import * as Sharing from "expo-sharing";
 import { useRef, useState } from "react";
 import {
 	ActivityIndicator,
@@ -26,6 +25,7 @@ import {
 	type SourcePhoto,
 } from "@/lib/gemini";
 import { dataUrlToFile, uriToSourcePhoto } from "@/lib/image-utils";
+import { shareImageFile, shareImageToWhatsApp } from "@/lib/share";
 import { STICKER_EMOTIONS, type StickerStyleId } from "@/lib/sticker-styles";
 import { saveSticker } from "@/lib/stickers-store";
 
@@ -186,7 +186,7 @@ export default function CreateScreen() {
 		}
 	}
 
-	async function handleShareSheet() {
+	async function captureSheetUri(): Promise<string | null> {
 		try {
 			const uri = await sheetRef.current?.capture?.();
 			if (!uri) {
@@ -194,23 +194,42 @@ export default function CreateScreen() {
 					"Not ready",
 					"Generate stickers first, then share the sheet.",
 				);
-				return;
+				return null;
 			}
-			const canShare = await Sharing.isAvailableAsync();
-			if (!canShare) {
-				Alert.alert(
-					"Sharing unavailable",
-					"Sharing is not available on this device.",
-				);
-				return;
-			}
-			await Sharing.shareAsync(uri, {
-				dialogTitle: "Share your StickerPop sheet",
-			});
+			return uri;
 		} catch (e) {
 			Alert.alert(
 				"Share failed",
 				e instanceof Error ? e.message : "Could not share sheet.",
+			);
+			return null;
+		}
+	}
+
+	async function handleShareSheet() {
+		const uri = await captureSheetUri();
+		if (!uri) return;
+		await shareImageFile(uri, "Share your StickerPop sheet");
+	}
+
+	async function handleShareSheetToWhatsApp() {
+		const uri = await captureSheetUri();
+		if (!uri) return;
+		await shareImageToWhatsApp(uri, "My StickerPop stickers!");
+	}
+
+	async function handleShareStickerToWhatsApp(sticker: GeneratedSticker) {
+		if (!sticker.imageUrl) return;
+		try {
+			const fileUri = await dataUrlToFile(
+				sticker.imageUrl,
+				`sticker-${sticker.emotion.toLowerCase()}-${Date.now()}.png`,
+			);
+			await shareImageToWhatsApp(fileUri, `My ${sticker.emotion} sticker!`);
+		} catch (e) {
+			Alert.alert(
+				"Share failed",
+				e instanceof Error ? e.message : "Could not share sticker.",
 			);
 		}
 	}
@@ -361,6 +380,15 @@ export default function CreateScreen() {
 							}}
 							className="w-full"
 						/>
+						<StickerPopButton
+							title="Send via WhatsApp"
+							icon="logo-whatsapp"
+							variant="whatsapp"
+							onPress={() => {
+								if (preview) handleShareStickerToWhatsApp(preview);
+							}}
+							className="w-full"
+						/>
 					</View>
 				</Pressable>
 			</Modal>
@@ -387,11 +415,17 @@ export default function CreateScreen() {
 						</View>
 						{/* Rendered visibly so capture() works reliably */}
 						<StickerSheetView ref={sheetRef} stickers={stickers} />
-						<View className="mt-4">
+						<View className="mt-4 gap-3">
 							<StickerPopButton
 								title="Share Sheet"
 								icon="share-outline"
 								onPress={handleShareSheet}
+							/>
+							<StickerPopButton
+								title="Send via WhatsApp"
+								icon="logo-whatsapp"
+								variant="whatsapp"
+								onPress={handleShareSheetToWhatsApp}
 							/>
 						</View>
 					</View>

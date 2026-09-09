@@ -7,7 +7,7 @@ interface Props {
 	onPress: () => void;
 	disabled?: boolean;
 	loading?: boolean;
-	variant?: "primary" | "secondary" | "dark";
+	variant?: "primary" | "secondary" | "dark" | "whatsapp";
 	icon?: keyof typeof Ionicons.glyphMap;
 	className?: string;
 }
@@ -22,6 +22,7 @@ export function StickerPopButton({
 	className,
 }: Props) {
 	const isDisabled = disabled || loading;
+	const isLightText = variant === "dark" || variant === "whatsapp";
 	return (
 		<Pressable
 			onPress={onPress}
@@ -31,26 +32,27 @@ export function StickerPopButton({
 				variant === "primary" && "bg-pop-yellow",
 				variant === "secondary" && "bg-white",
 				variant === "dark" && "bg-pop-navy",
+				variant === "whatsapp" && "bg-[#25D366]",
 				isDisabled && "border-[#C9CDD3] bg-[#F1F2F4]",
 				className,
 			)}
 		>
 			{loading ? (
-				<ActivityIndicator color="#0B1533" />
+				<ActivityIndicator color={isLightText ? "#fff" : "#0B1533"} />
 			) : (
 				<>
 					{icon ? (
 						<Ionicons
 							name={icon}
 							size={20}
-							color={variant === "dark" ? "#fff" : "#0B1533"}
+							color={isLightText ? "#fff" : "#0B1533"}
 							style={{ marginRight: 8 }}
 						/>
 					) : null}
 					<Text
 						className={cn(
 							"font-poppins-semibold text-[17px] text-pop-navy",
-							variant === "dark" && "text-white",
+							isLightText && "text-white",
 							isDisabled && "text-[#9AA0A8]",
 						)}
 					>

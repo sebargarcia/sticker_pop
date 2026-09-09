@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
-import * as Sharing from "expo-sharing";
 import { useCallback, useState } from "react";
 import {
 	Alert,
@@ -15,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StickerPopButton } from "@/components/sticker-pop-button";
+import { shareImageFile, shareImageToWhatsApp } from "@/lib/share";
 import {
 	deleteSticker,
 	listSavedStickers,
@@ -66,24 +66,11 @@ export default function MyStickersScreen() {
 	}
 
 	async function handleShare(sticker: SavedSticker) {
-		try {
-			const canShare = await Sharing.isAvailableAsync();
-			if (!canShare) {
-				Alert.alert(
-					"Sharing unavailable",
-					"Sharing is not available on this device.",
-				);
-				return;
-			}
-			await Sharing.shareAsync(sticker.fileUri, {
-				dialogTitle: `Share your ${sticker.emotion} sticker`,
-			});
-		} catch (e) {
-			Alert.alert(
-				"Share failed",
-				e instanceof Error ? e.message : "Could not share sticker.",
-			);
-		}
+		await shareImageFile(sticker.fileUri, `Share your ${sticker.emotion} sticker`);
+	}
+
+	async function handleShareToWhatsApp(sticker: SavedSticker) {
+		await shareImageToWhatsApp(sticker.fileUri, `My ${sticker.emotion} sticker!`);
 	}
 
 	return (
@@ -167,6 +154,15 @@ export default function MyStickersScreen() {
 						<Text className="font-poppins-extrabold text-lg text-pop-navy">
 							{preview?.emotion}
 						</Text>
+						<StickerPopButton
+							title="WhatsApp"
+							icon="logo-whatsapp"
+							variant="whatsapp"
+							onPress={() => {
+								if (preview) handleShareToWhatsApp(preview);
+							}}
+							className="flex-1"
+						/>
 						<View className="w-full flex-row gap-3">
 							<StickerPopButton
 								title="Share"

@@ -77,9 +77,13 @@ Rules for all new/edited UI code:
 - My Stickers: PNGs in `FileSystem.documentDirectory/stickers/` (`expo-file-system/legacy`
   API), index in AsyncStorage (`stickers-store.ts`). Generation auto-saves; Create and My
   Stickers share the store — keep them in sync via `useFocusEffect` reload.
-- Photo input: `expo-image-picker` for gallery + camera. Save/share: `expo-media-library`
-  + `expo-sharing`. Sheet export: `react-native-view-shot` `capture()` (view must be
-  mounted/visible). Permissions live in `app.json` plugin configs.
+- Photo input: `expo-image-picker` for gallery + camera. Save: `expo-media-library`.
+  Sharing: `lib/share.ts` — `shareImageToWhatsApp` sends straight to WhatsApp via
+  `react-native-share` (native module: requires a dev build, NOT Expo Go), falling back
+  to the system sheet (`expo-sharing`, WhatsApp appears there too) when WhatsApp is
+  missing. `shareImageFile` is the generic sheet. After adding any native module,
+  rebuild the dev client (`bun run android` / `bun run ios`).
+- Sheet export: `react-native-view-shot` `capture()` (view must be mounted/visible). Permissions live in `app.json` plugin configs.
 
 ## Conventions
 
