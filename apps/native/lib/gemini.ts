@@ -165,10 +165,10 @@ export async function generateSingleSticker(
 					: "No image data in response.",
 			);
 		} catch (err) {
-			console.error(
-				`Attempt ${attempt + 1} for emotion '${emotion}' failed:`,
-				err,
-			);
+			// Per-attempt failures are expected during retries (e.g. 429 quota).
+			// Don't console.error here: with 8 parallel emotions x 3 attempts
+			// that spams LogBox with "unhandled" ERROR logs. The caller
+			// surfaces the final per-emotion `error` via UI (single toast).
 			attempt++;
 			if (attempt >= maxAttempts) {
 				return {

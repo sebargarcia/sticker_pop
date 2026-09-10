@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
+import { useToast } from "heroui-native";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -49,6 +50,20 @@ export default function CreateScreen() {
 	const [showSheet, setShowSheet] = useState(false);
 	const [isExporting, setIsExporting] = useState(false);
 	const sheetRef = useRef<ViewShotRef>(null);
+	const { toast } = useToast();
+
+	/** Single coalesced error toast — fixed id replaces any visible one. */
+	function showErrorToast(message: string) {
+		toast.hide("generate-error");
+		toast.show({
+			id: "generate-error",
+			variant: "danger",
+			placement: "bottom",
+			duration: 6000,
+			label: t("create.generatingError"),
+			description: message,
+		});
+	}
 
 	async function pickImage(useCamera: boolean) {
 		setError(null);
@@ -115,8 +130,12 @@ export default function CreateScreen() {
 			const results = await Promise.all(promises);
 			setStickers(results);
 			const firstError = results.find((r) => r.error)?.error;
-			if (firstError && results.every((r) => !r.imageUrl)) {
-				setError(firstError);
+			if (firstError) {
+				// One toast for the whole batch, not one per emotion.
+				showErrorToast(firstError);
+				if (results.every((r) => !r.imageUrl)) {
+					setError(firstError);
+				}
 			}
 			// Persist successful ones to My Stickers automatically.
 			for (const r of results) {
@@ -133,7 +152,10 @@ export default function CreateScreen() {
 				}
 			}
 		} catch (e) {
-			setError(e instanceof Error ? e.message : t("create.generatingError"));
+			const message =
+				e instanceof Error ? e.message : t("create.generatingError");
+			setError(message);
+			showErrorToast(message);
 		} finally {
 			setIsLoading(false);
 		}
@@ -159,6 +181,9 @@ export default function CreateScreen() {
 		setStickers((prev) =>
 			prev.map((s) => (s.emotion === emotion ? result : s)),
 		);
+		if (result.error) {
+			showErrorToast(result.error);
+		}
 		if (result.imageUrl) {
 			try {
 				const fileUri = await dataUrlToFile(
