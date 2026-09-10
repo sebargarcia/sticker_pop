@@ -1,108 +1,126 @@
 {
-  "tabs": {
-    "home": "Home",
-    "create": "Create",
-    "myStickers": "My Stickers"
-  },
-  "home": {
-    "tagline": "Turn your ideas into funny stickers.",
-    "subtitle": "Create, customize and share stickers in seconds.",
-    "createCta": "Create Sticker",
-    "madeBy": "Made by Lola Garcia"
-  },
-  "styles": {
-    "heading": "Choose a style",
-    "popArt": "Pop Art",
-    "matchbox": "Retro Matchbox",
-    "dino": "Cartoon Dino",
-    "pixel": "Pixel Art",
-    "royal": "Royal",
-    "football": "Football",
-    "claymation": "Claymation",
-    "bollywood": "Bollywood",
-    "bomb": "Sticker Bomb"
-  },
-  "emotions": {
-    "happy": "Happy",
-    "sad": "Sad",
-    "angry": "Angry",
-    "surprised": "Surprised",
-    "laughing": "Laughing",
-    "love": "Love",
-    "winking": "Winking",
-    "confused": "Confused"
-  },
-  "create": {
-    "title": "Create a Sticker",
-    "subtitle": "Let's make something funny.",
-    "takePhoto": "Take Photo",
-    "retakePhoto": "Retake Photo",
-    "uploadPhoto": "Upload Photo",
-    "changePhoto": "Change Photo",
-    "cameraPermission": "Camera permission is needed to take a photo.",
-    "libraryPermission": "Photo library permission is needed to pick an image.",
-    "addPhotoHint": "Add a selfie or any photo to start",
-    "generate": "Create Stickers",
-    "generating": "Generating...",
-    "needPhoto": "Please add a photo first.",
-    "loadImageError": "Could not load that image.",
-    "generatingError": "Something went wrong generating.",
-    "magicMoment": "Gemini is working its magic...",
-    "emptyTitle": "Your stickers will appear here.",
-    "emptySubtitle": "Follow the steps to get started!",
-    "viewSheet": "View Sticker Sheet",
-    "sheetTitle": "Sticker Sheet",
-    "shareSheet": "Share Sheet",
-    "sendWhatsApp": "Send via WhatsApp",
-    "saveToLibrary": "Save to My Stickers",
-    "savedTitle": "Nice one!",
-    "savedMessage": "Sticker created and saved to My Stickers.",
-    "permissionNeeded": "Permission needed",
-    "permissionMessage": "Allow photo access to save stickers.",
-    "saveFailed": "Could not save sticker."
-  },
-  "grid": {
-    "generating": "Generating",
-    "failed": "Failed",
-    "retry": "Retry",
-    "saveAction": "Save {{emotion}} sticker",
-    "regenerateAction": "Regenerate {{emotion}} sticker"
-  },
-  "sheet": {
-    "subtitle": "Small moments. Big laughs.",
-    "footerBold": "Made with StickerPop",
-    "footerSmall": "Create. Share. Stick."
-  },
-  "myStickers": {
-    "title": "My Stickers",
-    "subtitleEmpty": "That deserves a sticker.",
-    "count_one": "{{count}} sticker created",
-    "count_other": "{{count}} stickers created",
-    "emptyTitle": "No stickers yet!",
-    "emptySubtitle": "Let's make your first one.",
-    "createCta": "Create Sticker",
-    "deleteTitle": "Delete sticker?",
-    "deleteMessage": "\"{{emotion}}\" will be removed from My Stickers.",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "share": "Share",
-    "whatsapp": "WhatsApp",
-    "shareDialog": "Share your {{emotion}} sticker"
-  },
-  "share": {
-    "whatsappTitle": "Share sticker via WhatsApp",
-    "defaultMessage": "Made with StickerPop",
-    "unavailableTitle": "Sharing unavailable",
-    "unavailableMessage": "Sharing is not available on this device.",
-    "failedTitle": "Share failed",
-    "failedMessage": "Could not share.",
-    "sheetDialog": "Share your StickerPop sheet",
-    "sheetMessage": "My StickerPop stickers!",
-    "notReadyTitle": "Not ready",
-    "notReadyMessage": "Generate stickers first, then share the sheet.",
-    "stickerMessage": "My {{emotion}} sticker!"
-  },
-  "gemini": {
-    "missingKey": "Missing EXPO_PUBLIC_GEMINI_API_KEY. Add it to apps/native/.env (get one at https://aistudio.google.com)."
-  }
+	"tabs": {
+		"home": "Home",
+		"create": "Create",
+		"myStickers": "My Stickers"
+	},
+	"home": {
+		"tagline": "Turn your ideas into funny stickers.",
+		"subtitle": "Create, customize and share stickers in seconds.",
+		"createCta": "Create Sticker",
+		"madeBy": "Made by Lola Garcia"
+	},
+	"styles": {
+		"heading": "Choose a style",
+		"popArt": "Pop Art",
+		"matchbox": "Retro Matchbox",
+		"dino": "Cartoon Dino",
+		"pixel": "Pixel Art",
+		"royal": "Royal",
+		"football": "Football",
+		"claymation": "Claymation",
+		"bollywood": "Bollywood",
+		"bomb": "Sticker Bomb"
+	},
+	"emotions": {
+		"happy": "Happy",
+		"sad": "Sad",
+		"angry": "Angry",
+		"surprised": "Surprised",
+		"laughing": "Laughing",
+		"love": "Love",
+		"winking": "Winking",
+		"confused": "Confused"
+	},
+	"create": {
+		"title": "Create a Sticker",
+		"subtitle": "Let's make something funny.",
+		"takePhoto": "Take Photo",
+		"retakePhoto": "Retake Photo",
+		"uploadPhoto": "Upload Photo",
+		"changePhoto": "Change Photo",
+		"cameraPermission": "Camera permission is needed to take a photo.",
+		"libraryPermission": "Photo library permission is needed to pick an image.",
+		"addPhotoHint": "Add a selfie or any photo to start",
+		"generate": "Create Stickers",
+		"generating": "Generating...",
+		"needPhoto": "Please add a photo first.",
+		"loadImageError": "Could not load that image.",
+		"generatingError": "Something went wrong generating.",
+		"magicMoment": "Gemini is working its magic...",
+		"emptyTitle": "Your stickers will appear here.",
+		"emptySubtitle": "Follow the steps to get started!",
+		"viewSheet": "View Sticker Sheet",
+		"sheetTitle": "Sticker Sheet",
+		"shareSheet": "Share Sheet",
+		"sendWhatsApp": "Send via WhatsApp",
+		"saveToLibrary": "Save to My Stickers",
+		"savedTitle": "Nice one!",
+		"savedMessage": "Sticker created and saved to My Stickers.",
+		"permissionNeeded": "Permission needed",
+		"permissionMessage": "Allow photo access to save stickers.",
+		"saveFailed": "Could not save sticker."
+	},
+	"grid": {
+		"generating": "Generating",
+		"failed": "Failed",
+		"retry": "Retry",
+		"saveAction": "Save {{emotion}} sticker",
+		"regenerateAction": "Regenerate {{emotion}} sticker"
+	},
+	"sheet": {
+		"subtitle": "Small moments. Big laughs.",
+		"footerBold": "Made with StickerPop",
+		"footerSmall": "Create. Share. Stick."
+	},
+	"myStickers": {
+		"title": "My Stickers",
+		"subtitleEmpty": "That deserves a sticker.",
+		"count_one": "{{count}} sticker created",
+		"count_other": "{{count}} stickers created",
+		"emptyTitle": "No stickers yet!",
+		"emptySubtitle": "Let's make your first one.",
+		"createCta": "Create Sticker",
+		"deleteTitle": "Delete sticker?",
+		"deleteMessage": "\"{{emotion}}\" will be removed from My Stickers.",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"share": "Share",
+		"whatsapp": "WhatsApp",
+		"shareDialog": "Share your {{emotion}} sticker"
+	},
+	"share": {
+		"whatsappTitle": "Share sticker via WhatsApp",
+		"defaultMessage": "Made with StickerPop",
+		"unavailableTitle": "Sharing unavailable",
+		"unavailableMessage": "Sharing is not available on this device.",
+		"failedTitle": "Share failed",
+		"failedMessage": "Could not share.",
+		"sheetDialog": "Share your StickerPop sheet",
+		"sheetMessage": "My StickerPop stickers!",
+		"notReadyTitle": "Not ready",
+		"notReadyMessage": "Generate stickers first, then share the sheet.",
+		"stickerMessage": "My {{emotion}} sticker!"
+	},
+	"whatsapp": {
+		"exportSingle": "Export WhatsApp sticker",
+		"exportPack": "Export pack for WhatsApp",
+		"exporting": "Exporting…",
+		"shareDialog": "Share your WhatsApp sticker",
+		"packDialog": "Share your WhatsApp sticker pack",
+		"packName": "StickerPop Pack",
+		"successTitle": "Stickers exported!",
+		"successMessage": "{{count}} WhatsApp-ready stickers (512×512 WebP) packed into a .wasticker file.",
+		"cappedMessage": "Only the first {{count}} of {{total}} stickers fit in a WhatsApp pack (max 30). The rest were skipped.",
+		"partialTitle": "Exported with warnings",
+		"partialMessage": "Only {{valid}} of {{count}} stickers fit under 100 KB, so the pack was not shared.",
+		"tooFewTitle": "Need more stickers",
+		"tooFewMessage": "A WhatsApp pack needs at least 3 stickers. Generate or save more first.",
+		"failedTitle": "Export failed",
+		"failedMessage": "Could not export WhatsApp stickers.",
+		"howTo": "512×512 WebP • under 100 KB each. Exported as a .wasticker pack to import with a sticker app."
+	},
+	"gemini": {
+		"missingKey": "Missing EXPO_PUBLIC_GEMINI_API_KEY. Add it to apps/native/.env (get one at https://aistudio.google.com)."
+	}
 }

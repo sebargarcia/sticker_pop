@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	Alert,
 	Image,
@@ -11,7 +12,6 @@ import {
 	Text,
 	View,
 } from "react-native";
-import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StickerPopButton } from "@/components/sticker-pop-button";
@@ -22,6 +22,12 @@ import {
 	listSavedStickers,
 	type SavedSticker,
 } from "@/lib/stickers-store";
+import {
+	exportSingleSticker,
+	exportStickerPack,
+	shareFile,
+	shareWebpFile,
+} from "@/lib/whatsapp";
 
 export default function MyStickersScreen() {
 	const router = useRouter();
@@ -30,6 +36,7 @@ export default function MyStickersScreen() {
 	const [stickers, setStickers] = useState<SavedSticker[]>([]);
 	const [refreshing, setRefreshing] = useState(false);
 	const [preview, setPreview] = useState<SavedSticker | null>(null);
+	const [isExporting, setIsExporting] = useState(false);
 
 	const load = useCallback(async () => {
 		const all = await listSavedStickers();
@@ -81,6 +88,77 @@ export default function MyStickersScreen() {
 		);
 	}
 
+	/** Exports one saved sticker as 512x512 WebP and shares it. */
+	async function handleExportSingle(sticker: SavedSticker) {
+		if (isExporting) return;
+		setIsExporting(true);
+		try {
+			const file = await exportSingleSticker(sticker.fileUri, sticker.emotion);
+			if (!file.withinLimit) {
+				Alert.alert(
+					t("whatsapp.partialTitle"),
+					t("whatsapp.partialMessage", { valid: 0, count: 1 }),
+				);
+				return;
+			}
+			await shareWebpFile(file.fileUri, t("whatsapp.shareDialog"));
+		} catch (e) {
+			Alert.alert(
+				t("whatsapp.failedTitle"),
+				e instanceof Error ? e.message : t("whatsapp.failedMessage"),
+			);
+		} finally {
+			setIsExporting(false);
+		}
+	}
+
+	/** Exports saved stickers as a validated WhatsApp pack (capped at 30). */
+	async function handleExportPack() {
+		if (isExporting) return;
+		if (stickers.length < 3) {
+			Alert.alert(t("whatsapp.tooFewTitle"), t("whatsapp.tooFewMessage"));
+			return;
+		}
+		setIsExporting(true);
+		try {
+			const pack = await exportStickerPack(
+				stickers.map((s) => ({ sourceUri: s.fileUri, emotion: s.emotion })),
+				t("whatsapp.packName"),
+			);
+			if (!pack.valid) {
+				const validCount = pack.stickers.filter((s) => s.withinLimit).length;
+				Alert.alert(
+					t("whatsapp.partialTitle"),
+					t("whatsapp.partialMessage", {
+						valid: validCount,
+						count: pack.stickers.length,
+					}),
+				);
+				return;
+			}
+			await shareFile(pack.archiveUri, {
+				mimeType: "application/octet-stream",
+				dialogTitle: t("whatsapp.packDialog"),
+			});
+			Alert.alert(
+				t("whatsapp.successTitle"),
+				pack.stickers.length < pack.sourceCount
+					? t("whatsapp.cappedMessage", {
+							count: pack.stickers.length,
+							total: pack.sourceCount,
+						})
+					: t("whatsapp.successMessage", { count: pack.stickers.length }),
+			);
+		} catch (e) {
+			Alert.alert(
+				t("whatsapp.failedTitle"),
+				e instanceof Error ? e.message : t("whatsapp.failedMessage"),
+			);
+		} finally {
+			setIsExporting(false);
+		}
+	}
+
 	return (
 		<ScrollView
 			className="flex-1 bg-pop-bg"
@@ -120,24 +198,44 @@ export default function MyStickersScreen() {
 					/>
 				</View>
 			) : (
-				<View className="-mx-1.5 flex-row flex-wrap">
-					{stickers.map((sticker) => (
-						<View key={sticker.id} className="w-1/3 p-1.5">
-							<Pressable
-								onPress={() => setPreview(sticker)}
-								onLongPress={() => confirmDelete(sticker)}
-								className="rounded-[18px] border-[3px] border-white bg-white shadow active:opacity-80"
-							>
-								<Image
-									source={{ uri: sticker.fileUri }}
-									className="aspect-square w-full rounded-2xl bg-white"
-								/>
-							</Pressable>
-							<Text className="mt-1.5 text-center font-poppins-bold text-pop-navy text-xs">
-								{emotionLabel(sticker.emotion)}
+				<View>
+					{stickers.length >= 3 ? (
+						<View className="mb-3">
+							<StickerPopButton
+								title={
+									isExporting
+										? t("whatsapp.exporting")
+										: t("whatsapp.exportPack")
+								}
+								icon="albums-outline"
+								variant="dark"
+								loading={isExporting}
+								onPress={handleExportPack}
+							/>
+							<Text className="mt-2 text-center font-poppins-regular text-gray-500 text-xs">
+								{t("whatsapp.howTo")}
 							</Text>
 						</View>
-					))}
+					) : null}
+					<View className="-mx-1.5 flex-row flex-wrap">
+						{stickers.map((sticker) => (
+							<View key={sticker.id} className="w-1/3 p-1.5">
+								<Pressable
+									onPress={() => setPreview(sticker)}
+									onLongPress={() => confirmDelete(sticker)}
+									className="rounded-[18px] border-[3px] border-white bg-white shadow active:opacity-80"
+								>
+									<Image
+										source={{ uri: sticker.fileUri }}
+										className="aspect-square w-full rounded-2xl bg-white"
+									/>
+								</Pressable>
+								<Text className="mt-1.5 text-center font-poppins-bold text-pop-navy text-xs">
+									{emotionLabel(sticker.emotion)}
+								</Text>
+							</View>
+						))}
+					</View>
 				</View>
 			)}
 
@@ -168,6 +266,20 @@ export default function MyStickersScreen() {
 							variant="whatsapp"
 							onPress={() => {
 								if (preview) handleShareToWhatsApp(preview);
+							}}
+							className="w-full"
+						/>
+						<StickerPopButton
+							title={
+								isExporting
+									? t("whatsapp.exporting")
+									: t("whatsapp.exportSingle")
+							}
+							icon="logo-whatsapp"
+							variant="dark"
+							loading={isExporting}
+							onPress={() => {
+								if (preview) handleExportSingle(preview);
 							}}
 							className="w-full"
 						/>
