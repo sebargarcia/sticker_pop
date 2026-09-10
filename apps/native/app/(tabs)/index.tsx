@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Image, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
@@ -35,6 +36,13 @@ export default function Home() {
 					className="mt-[18px] w-full"
 				/>
 			</View>
+
+			<View className="mt-5 h-[64px] w-[64px] items-center justify-center self-center rounded-full border-2 border-pop-navy bg-white shadow">
+				<Ionicons name="heart" size={30} color="#FF4D8D" />
+			</View>
+			<Text className="mt-3 text-center font-poppins-semibold text-[15px] text-pop-navy">
+				{t("home.madeBy")}
+			</Text>
 		</View>
 	);
 }

@@ -7,7 +7,8 @@
   "home": {
     "tagline": "Turn your ideas into funny stickers.",
     "subtitle": "Create, customize and share stickers in seconds.",
-    "createCta": "Create Sticker"
+    "createCta": "Create Sticker",
+    "madeBy": "Made by Lola Garcia"
   },
   "styles": {
     "heading": "Choose a style",
