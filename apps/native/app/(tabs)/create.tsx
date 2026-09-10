@@ -188,7 +188,6 @@ export default function CreateScreen() {
 				`sticker-${sticker.emotion.toLowerCase()}-${Date.now()}.png`,
 			);
 			await MediaLibrary.saveToLibraryAsync(fileUri);
-			await saveSticker({ emotion: sticker.emotion, styleId: style, fileUri });
 			Alert.alert(t("create.savedTitle"), t("create.savedMessage"));
 		} catch (e) {
 			Alert.alert(

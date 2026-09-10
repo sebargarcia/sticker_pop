@@ -54,9 +54,9 @@
 		"sheetTitle": "Sticker Sheet",
 		"shareSheet": "Share Sheet",
 		"sendWhatsApp": "Send via WhatsApp",
-		"saveToLibrary": "Save to My Stickers",
+		"saveToLibrary": "Save to Photos",
 		"savedTitle": "Nice one!",
-		"savedMessage": "Sticker created and saved to My Stickers.",
+		"savedMessage": "Sticker saved to your photos.",
 		"permissionNeeded": "Permission needed",
 		"permissionMessage": "Allow photo access to save stickers.",
 		"saveFailed": "Could not save sticker."
