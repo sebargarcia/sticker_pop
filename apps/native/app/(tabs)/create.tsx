@@ -114,6 +114,10 @@ export default function CreateScreen() {
 			);
 			const results = await Promise.all(promises);
 			setStickers(results);
+			const firstError = results.find((r) => r.error)?.error;
+			if (firstError && results.every((r) => !r.imageUrl)) {
+				setError(firstError);
+			}
 			// Persist successful ones to My Stickers automatically.
 			for (const r of results) {
 				if (r.imageUrl) {

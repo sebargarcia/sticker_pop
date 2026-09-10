@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
 
 import type { GeneratedSticker } from "@/lib/gemini";
 import { emotionLabel } from "@/lib/i18n";
@@ -79,6 +79,14 @@ export function StickerGrid({
 							<Text className="font-poppins-regular text-pop-navy">
 								{emotionLabel(sticker.emotion)}
 							</Text>
+							{sticker.error ? (
+								<Text
+									className="mt-1 text-center font-poppins-regular text-[#D92D20] text-[10px]"
+									numberOfLines={2}
+								>
+									{sticker.error}
+								</Text>
+							) : null}
 							<Pressable
 								onPress={() => onRegenerate(sticker.emotion)}
 								className="mt-2 rounded-full bg-[#D92D20] px-3.5 py-1.5"
