@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	ActivityIndicator,
 	Alert,
@@ -12,7 +13,6 @@ import {
 	Text,
 	View,
 } from "react-native";
-import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { ViewShotRef } from "react-native-view-shot";
 import { StickerGrid } from "@/components/sticker-grid";
@@ -25,11 +25,16 @@ import {
 	generateStickerSet,
 	type SourcePhoto,
 } from "@/lib/gemini";
-import { dataUrlToFile, uriToSourcePhoto } from "@/lib/image-utils";
 import { emotionLabel } from "@/lib/i18n";
+import { dataUrlToFile, uriToSourcePhoto } from "@/lib/image-utils";
 import { shareImageFile, shareImageToWhatsApp } from "@/lib/share";
 import { STICKER_EMOTIONS, type StickerStyleId } from "@/lib/sticker-styles";
 import { saveSticker } from "@/lib/stickers-store";
+import {
+	exportSingleSticker,
+	exportStickerPack,
+	shareWebpFile,
+} from "@/lib/whatsapp";
 
 export default function CreateScreen() {
 	const insets = useSafeAreaInsets();
@@ -41,6 +46,7 @@ export default function CreateScreen() {
 	const [error, setError] = useState<string | null>(null);
 	const [preview, setPreview] = useState<GeneratedSticker | null>(null);
 	const [showSheet, setShowSheet] = useState(false);
+	const [isExporting, setIsExporting] = useState(false);
 	const sheetRef = useRef<ViewShotRef>(null);
 
 	async function pickImage(useCamera: boolean) {
@@ -51,7 +57,9 @@ export default function CreateScreen() {
 				: await ImagePicker.requestMediaLibraryPermissionsAsync();
 			if (!permission.granted) {
 				setError(
-					useCamera ? t("create.cameraPermission") : t("create.libraryPermission"),
+					useCamera
+						? t("create.cameraPermission")
+						: t("create.libraryPermission"),
 				);
 				return;
 			}
@@ -164,7 +172,10 @@ export default function CreateScreen() {
 		try {
 			const { status } = await MediaLibrary.requestPermissionsAsync();
 			if (status !== "granted") {
-				Alert.alert(t("create.permissionNeeded"), t("create.permissionMessage"));
+				Alert.alert(
+					t("create.permissionNeeded"),
+					t("create.permissionMessage"),
+				);
 				return;
 			}
 			const fileUri = await dataUrlToFile(
@@ -227,6 +238,76 @@ export default function CreateScreen() {
 				t("share.failedTitle"),
 				e instanceof Error ? e.message : t("share.failedMessage"),
 			);
+		}
+	}
+
+	/**
+	 * Exports one sticker as a spec-compliant WhatsApp sticker
+	 * (512x512 WebP, <= 100 KB) and opens the system sheet for it.
+	 * Image sharing above is untouched — this is the separate sticker path.
+	 */
+	async function handleExportSticker(sticker: GeneratedSticker) {
+		if (!sticker.imageUrl || isExporting) return;
+		setIsExporting(true);
+		try {
+			const file = await exportSingleSticker(sticker.imageUrl, sticker.emotion);
+			if (!file.withinLimit) {
+				Alert.alert(
+					t("whatsapp.partialTitle"),
+					t("whatsapp.partialMessage", { valid: 0, count: 1 }),
+				);
+				return;
+			}
+			await shareWebpFile(file.fileUri, t("whatsapp.shareDialog"));
+		} catch (e) {
+			Alert.alert(
+				t("whatsapp.failedTitle"),
+				e instanceof Error ? e.message : t("whatsapp.failedMessage"),
+			);
+		} finally {
+			setIsExporting(false);
+		}
+	}
+
+	/** Exports all generated stickers as a validated WhatsApp pack. */
+	async function handleExportPack() {
+		if (isExporting) return;
+		const ready = stickers.filter((s) => s.imageUrl);
+		if (ready.length < 3) {
+			Alert.alert(t("whatsapp.tooFewTitle"), t("whatsapp.tooFewMessage"));
+			return;
+		}
+		setIsExporting(true);
+		try {
+			const pack = await exportStickerPack(
+				ready.map((s) => ({
+					sourceUri: s.imageUrl as string,
+					emotion: s.emotion,
+				})),
+				t("whatsapp.packName"),
+			);
+			if (pack.valid) {
+				Alert.alert(
+					t("whatsapp.successTitle"),
+					t("whatsapp.successMessage", { count: pack.stickers.length }),
+				);
+			} else {
+				const validCount = pack.stickers.filter((s) => s.withinLimit).length;
+				Alert.alert(
+					t("whatsapp.partialTitle"),
+					t("whatsapp.partialMessage", {
+						valid: validCount,
+						count: pack.stickers.length,
+					}),
+				);
+			}
+		} catch (e) {
+			Alert.alert(
+				t("whatsapp.failedTitle"),
+				e instanceof Error ? e.message : t("whatsapp.failedMessage"),
+			);
+		} finally {
+			setIsExporting(false);
 		}
 	}
 
@@ -385,6 +466,20 @@ export default function CreateScreen() {
 							}}
 							className="w-full"
 						/>
+						<StickerPopButton
+							title={
+								isExporting
+									? t("whatsapp.exporting")
+									: t("whatsapp.exportSingle")
+							}
+							icon="logo-whatsapp"
+							variant="dark"
+							loading={isExporting}
+							onPress={() => {
+								if (preview) handleExportSticker(preview);
+							}}
+							className="w-full"
+						/>
 					</View>
 				</Pressable>
 			</Modal>
@@ -423,6 +518,20 @@ export default function CreateScreen() {
 								variant="whatsapp"
 								onPress={handleShareSheetToWhatsApp}
 							/>
+							<StickerPopButton
+								title={
+									isExporting
+										? t("whatsapp.exporting")
+										: t("whatsapp.exportPack")
+								}
+								icon="albums-outline"
+								variant="dark"
+								loading={isExporting}
+								onPress={handleExportPack}
+							/>
+							<Text className="text-center font-poppins-regular text-gray-500 text-xs">
+								{t("whatsapp.howTo")}
+							</Text>
 						</View>
 					</View>
 				</View>

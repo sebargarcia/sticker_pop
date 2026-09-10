@@ -118,6 +118,13 @@ Rules for all new/edited UI code:
   to the system sheet (`expo-sharing`, WhatsApp appears there too) when WhatsApp is
   missing. `shareImageFile` is the generic sheet. After adding any native module,
   rebuild the dev client (`bun run android` / `bun run ios`).
+- WhatsApp sticker export: `lib/whatsapp.ts` — converts PNGs to spec-compliant
+  stickers (512x512 WebP ≤ 100 KB via `expo-image-manipulator`, adaptive quality
+  steps; 96x96 PNG tray ≤ 50 KB; packs require 3-30 stickers) into
+  `FileSystem.documentDirectory/whatsapp/<packId>/` with a WhatsApp-shaped
+  `pack.json` manifest (ready for a future native "Add to WhatsApp" provider).
+  Single stickers share via `shareWebpFile` (`image/webp` system sheet);
+  `expo-image-manipulator` is a native module — rebuild the dev client after install.
 - Sheet export: `react-native-view-shot` `capture()` (view must be mounted/visible). Permissions live in `app.json` plugin configs.
 
 ## Conventions
