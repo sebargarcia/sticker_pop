@@ -62,8 +62,3 @@ export async function deleteSticker(id: string): Promise<SavedSticker[]> {
 	}
 	return rest.sort((a, b) => b.createdAt - a.createdAt);
 }
-
-export async function isStickerSaved(fileUri: string): Promise<boolean> {
-	const all = await readAll();
-	return all.some((s) => s.fileUri === fileUri);
-}
