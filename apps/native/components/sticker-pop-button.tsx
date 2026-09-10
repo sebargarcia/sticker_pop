@@ -22,6 +22,9 @@ export function StickerPopButton({
 	className,
 }: Props) {
 	const isDisabled = disabled || loading;
+	// Keep the variant background while loading so the spinner stays visible;
+	// only grey out a genuinely disabled (non-loading) button.
+	const isVisuallyDisabled = disabled && !loading;
 	const isLightText = variant === "dark" || variant === "whatsapp";
 	return (
 		<Pressable
@@ -33,7 +36,7 @@ export function StickerPopButton({
 				variant === "secondary" && "bg-white",
 				variant === "dark" && "bg-pop-navy",
 				variant === "whatsapp" && "bg-[#25D366]",
-				isDisabled && "border-[#C9CDD3] bg-[#F1F2F4]",
+				isVisuallyDisabled && "border-[#C9CDD3] bg-[#F1F2F4]",
 				className,
 			)}
 		>
@@ -53,7 +56,7 @@ export function StickerPopButton({
 						className={cn(
 							"font-poppins-semibold text-[17px] text-pop-navy",
 							isLightText && "text-white",
-							isDisabled && "text-[#9AA0A8]",
+							isVisuallyDisabled && "text-[#9AA0A8]",
 						)}
 					>
 						{title}
