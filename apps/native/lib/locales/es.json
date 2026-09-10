@@ -1,0 +1,108 @@
+{
+  "tabs": {
+    "home": "Inicio",
+    "create": "Crear",
+    "myStickers": "Mis Stickers"
+  },
+  "home": {
+    "tagline": "Convierte tus ideas en stickers divertidos.",
+    "subtitle": "Crea, personaliza y comparte stickers en segundos.",
+    "createCta": "Crear Sticker",
+    "madeBy": "Hecho por Lola Garcia"
+  },
+  "styles": {
+    "heading": "Elige un estilo",
+    "popArt": "Pop Art",
+    "matchbox": "Retro",
+    "dino": "Dino",
+    "pixel": "Pixel Art",
+    "royal": "Realeza",
+    "football": "Fútbol",
+    "claymation": "Plastilina",
+    "bollywood": "Bollywood",
+    "bomb": "Bomba"
+  },
+  "emotions": {
+    "happy": "Feliz",
+    "sad": "Triste",
+    "angry": "Enojado",
+    "surprised": "Sorprendido",
+    "laughing": "Riendo",
+    "love": "Amor",
+    "winking": "Guiño",
+    "confused": "Confundido"
+  },
+  "create": {
+    "title": "Crea un Sticker",
+    "subtitle": "Hagamos algo divertido.",
+    "takePhoto": "Tomar Foto",
+    "retakePhoto": "Repetir Foto",
+    "uploadPhoto": "Subir Foto",
+    "changePhoto": "Cambiar Foto",
+    "cameraPermission": "Se necesita permiso de cámara para tomar una foto.",
+    "libraryPermission": "Se necesita acceso a tus fotos para elegir una imagen.",
+    "addPhotoHint": "Agrega una selfie o cualquier foto para empezar",
+    "generate": "Crear Stickers",
+    "generating": "Generando...",
+    "needPhoto": "Primero agrega una foto.",
+    "loadImageError": "No se pudo cargar esa imagen.",
+    "generatingError": "Algo salió mal al generar.",
+    "magicMoment": "Gemini está haciendo su magia...",
+    "emptyTitle": "Tus stickers aparecerán aquí.",
+    "emptySubtitle": "¡Sigue los pasos para empezar!",
+    "viewSheet": "Ver Hoja de Stickers",
+    "sheetTitle": "Hoja de Stickers",
+    "shareSheet": "Compartir Hoja",
+    "sendWhatsApp": "Enviar por WhatsApp",
+    "saveToLibrary": "Guardar en Mis Stickers",
+    "savedTitle": "¡Buenísimo!",
+    "savedMessage": "Sticker creado y guardado en Mis Stickers.",
+    "permissionNeeded": "Permiso necesario",
+    "permissionMessage": "Permite el acceso a tus fotos para guardar stickers.",
+    "saveFailed": "No se pudo guardar el sticker."
+  },
+  "grid": {
+    "generating": "Generando",
+    "failed": "Falló",
+    "retry": "Reintentar",
+    "saveAction": "Guardar sticker de {{emotion}}",
+    "regenerateAction": "Regenerar sticker de {{emotion}}"
+  },
+  "sheet": {
+    "subtitle": "Momentos pequeños. Risas grandes.",
+    "footerBold": "Hecho con StickerPop",
+    "footerSmall": "Crea. Comparte. Pega."
+  },
+  "myStickers": {
+    "title": "Mis Stickers",
+    "subtitleEmpty": "Esto merece un sticker.",
+    "count_one": "{{count}} sticker creado",
+    "count_other": "{{count}} stickers creados",
+    "emptyTitle": "¡Aún no hay stickers!",
+    "emptySubtitle": "Creemos el primero.",
+    "createCta": "Crear Sticker",
+    "deleteTitle": "¿Eliminar sticker?",
+    "deleteMessage": "«{{emotion}}» se quitará de Mis Stickers.",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "share": "Compartir",
+    "whatsapp": "WhatsApp",
+    "shareDialog": "Comparte tu sticker de {{emotion}}"
+  },
+  "share": {
+    "whatsappTitle": "Compartir sticker por WhatsApp",
+    "defaultMessage": "Hecho con StickerPop",
+    "unavailableTitle": "Compartir no disponible",
+    "unavailableMessage": "Este dispositivo no permite compartir.",
+    "failedTitle": "Error al compartir",
+    "failedMessage": "No se pudo compartir.",
+    "sheetDialog": "Comparte tu hoja de StickerPop",
+    "sheetMessage": "¡Mis stickers de StickerPop!",
+    "notReadyTitle": "Todavía no",
+    "notReadyMessage": "Genera stickers primero y luego comparte la hoja.",
+    "stickerMessage": "¡Mi sticker de {{emotion}}!"
+  },
+  "gemini": {
+    "missingKey": "Falta EXPO_PUBLIC_GEMINI_API_KEY. Agrégala en apps/native/.env (consíguela en https://aistudio.google.com)."
+  }
+}

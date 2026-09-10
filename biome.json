@@ -21,6 +21,7 @@
       "!**/.nuxt",
       "!bts.jsonc",
       "!**/.expo",
+      "!**/.agents",
       "!**/.wrangler",
       "!**/.alchemy",
       "!**/.svelte-kit",
