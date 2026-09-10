@@ -40,21 +40,20 @@ Monorepo workspace (`bun`, `turbo`); this guide is scoped to `apps/native`.
 
 ## Structure
 
-- `app/` — expo-router routes. Root `Stack` → `(drawer)` → `(tabs)`: `index` (Home), `create` (Create), `my-stickers` (My Stickers). `modal.tsx`, `+not-found.tsx` are scaffold leftovers.
-- `components/` — `sticker-pop-button.tsx`, `style-carousel.tsx`, `sticker-grid.tsx`, `sticker-sheet.tsx` (StickerPop UI). `container.tsx`, `sign-in/up.tsx`, `theme-toggle.tsx` are scaffold/auth leftovers.
+- `app/` — expo-router routes. Root `Stack` → `(tabs)` (no drawer): `index` (Home), `create` (Create), `my-stickers` (My Stickers). `+not-found.tsx` is a scaffold leftover.
+- `components/` — `sticker-pop-button.tsx`, `style-carousel.tsx`, `sticker-grid.tsx`, `sticker-sheet.tsx` (StickerPop UI). `container.tsx` is a scaffold leftover (used by `+not-found.tsx`).
 - `lib/` — `gemini.ts` (generation API), `sticker-styles.ts` (9 styles + 8 emotions, local assets), `stickers-store.ts` (AsyncStorage index + FileSystem files), `image-utils.ts` (base64 helpers), `theme.ts` (hex constants — see Styling), `auth-client.ts` (Better-Auth, unused by v1).
 - `assets/stickers/` — copied from `docs/assets` (`sticker_pop_logo.png` + 9 style thumbs). Loaded via `require()`, never remote URLs.
-- `contexts/app-theme-context.tsx` — light/dark toggle backed by Uniwind.
 
 ## Styling — Uniwind (mandatory)
 
 Uniwind is the ONLY styling system. Verified working: `uniwind` in `package.json`,
-`withUniwindConfig` in `metro.config.js` (with `./global.css` entry), `@import "uniwind"`
-in `global.css`, `useUniwind`/`Uniwind.setTheme` in the theme context.
+`withUniwindConfig` in `metro.config.js` (with `./global.css` entry), and `@import "uniwind"`
+in `global.css`. (There is no theme-toggle UI yet; use `useUniwind` / `Uniwind.setTheme` if you add one.)
 
 Rules for all new/edited UI code:
 
-1. **Use `className`, never `StyleSheet.create`.** Scaffold components (`container`, `sign-in`, modal, drawer) already do this — follow them.
+1. **Use `className`, never `StyleSheet.create`.** Scaffold components (`container`, `+not-found`) already do this — follow them.
 2. **Brand colors = theme tokens** defined via `@theme` in `global.css`:
    `bg-pop-yellow`, `text-pop-navy`, `border-pop-navy`, `bg-pop-bg`, `bg-pop-sheet`,
    plus `pop-cyan`, `pop-green`, `pop-pink`, `pop-orange`. To add a color, extend the
@@ -67,8 +66,8 @@ Rules for all new/edited UI code:
    `tabBarLabelStyle`, `ScrollView contentContainerStyle` (safe-area insets), `FlatList`
    content padding, third-party components without `className` (`ViewShot` — wrap: outer
    keeps `style`, everything inside uses `className`; use `withUniwind` from `uniwind`
-   for icon components as in `theme-toggle.tsx`), and truly dynamic values (per-item
-   rotation in `style-carousel.tsx`).
+   for icon components), and truly dynamic values (per-item rotation in
+   `style-carousel.tsx`).
 5. Pressed states: `active:` variant (`active:opacity-80`, `active:scale-[0.97]`).
    Overlays: `bg-pop-navy/70`. Conditional classes: `cn()` from `heroui-native`.
 6. Fonts: Poppins is loaded in `app/_layout.tsx` via `useFonts` (all 6 weights,
@@ -77,14 +76,13 @@ Rules for all new/edited UI code:
    INSTEAD of `font-bold` etc., which break custom fonts on Android when combined with
    `fontFamily`. Mapping per design doc: headings extrabold/black, buttons semibold,
    labels medium/semibold, body regular. `tabBarLabelStyle` takes `fontFamily:
-   "Poppins_700Bold"` directly. Scaffold leftovers (sign-in, modal) still use system
-   weights — migrate them to `font-poppins-*` when touched.
+   "Poppins_700Bold"` directly.
 
-## i18n (Spanish default, English available)
+## i18n (Spanish only for now)
 
 - `lib/i18n.ts` + `lib/locales/es.json` / `en.json`, powered by `i18next` +
-  `react-i18next` + `expo-localization`. Language resolves at launch: English only when
-  the device locale is English, **Spanish otherwise** (default + fallback `es`).
+  `react-i18next`. Language is **forced to Spanish** at launch (explicit product
+  decision); `en.json` is kept for a future language toggle but is unreachable today.
 - In components/screens: `const { t } = useTranslation()` and `t("create.title")`.
   Outside React (`lib/share.ts`, `lib/gemini.ts`): `import i18n from "./i18n"` then
   `i18n.t(...)` — init is synchronous on import, always safe to call.
@@ -94,13 +92,12 @@ Rules for all new/edited UI code:
 - Technical error text (exception messages) stays untranslated; all user-facing copy
   lives in the locale files under `tabs.*`, `home.*`, `create.*`, `grid.*`, `sheet.*`,
   `myStickers.*`, `share.*`, `styles.*`, `emotions.*`, `gemini.*`.
-- `setAppLanguage` / `loadSavedLanguage` persist a manual choice (loaded in
-  `app/_layout.tsx`) — ready for a future settings toggle; there is no toggle UI yet.
 
 ## Generation API (Gemini)
 
-- Model `gemini-2.5-flash-image-preview` via REST `generateContent?key=`, direct from the
-  app (user decision for v1). Prompts in `lib/gemini.ts` are ported 1:1 from
+- Model `gemini-2.5-flash-image` (stable; override with `EXPO_PUBLIC_GEMINI_MODEL`) via
+  REST `generateContent?key=`, direct from the app (user decision for v1). Prompts in
+  `lib/gemini.ts` are ported 1:1 from
   `docs/gemstickers_app.tsx` — do not reword without comparing to the web original.
 - 1 tap = 8 parallel calls (one per emotion), 3 attempts with exponential backoff.
 - Key: `EXPO_PUBLIC_GEMINI_API_KEY` in `apps/native/.env`, schema in
@@ -132,6 +129,6 @@ Rules for all new/edited UI code:
 ## Conventions
 
 - TypeScript strict, `tsc --noEmit` clean before finishing. Path alias `@/*` → `./*`.
-- Brand voice: short, playful copy (`lib/theme.ts` → `StickerPopCopy`).
+- Brand voice: short, playful copy.
 - Sticker look: thick white die-cut border + navy outline + soft shadow (`shadow` utility).
 - Do not reintroduce `two.tsx`-style placeholder tabs; routes are Home / Create / My Stickers.
