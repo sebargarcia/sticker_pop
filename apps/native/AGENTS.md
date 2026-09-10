@@ -120,11 +120,13 @@ Rules for all new/edited UI code:
   rebuild the dev client (`bun run android` / `bun run ios`).
 - WhatsApp sticker export: `lib/whatsapp.ts` — converts PNGs to spec-compliant
   stickers (512x512 WebP ≤ 100 KB via `expo-image-manipulator`, adaptive quality
-  steps; 96x96 PNG tray ≤ 50 KB; packs require 3-30 stickers) into
-  `FileSystem.documentDirectory/whatsapp/<packId>/` with a WhatsApp-shaped
-  `pack.json` manifest (ready for a future native "Add to WhatsApp" provider).
-  Single stickers share via `shareWebpFile` (`image/webp` system sheet);
-  `expo-image-manipulator` is a native module — rebuild the dev client after install.
+  steps; 96x96 PNG tray ≤ 50 KB; packs cap at 30 stickers) into
+  `FileSystem.documentDirectory/whatsapp/pack/` with a WhatsApp `contents.json`
+  manifest, then zips it into `whatsapp/StickerPop.wasticker` (`lib/zip.ts`, a
+  STORE-method ZIP writer). Single stickers share via `shareWebpFile`
+  (`image/webp` system sheet); packs share the `.wasticker` archive via
+  `shareFile` for WhatsApp / a sticker app. `expo-image-manipulator` is a
+  native module — rebuild the dev client after install.
 - Sheet export: `react-native-view-shot` `capture()` (view must be mounted/visible). Permissions live in `app.json` plugin configs.
 
 ## Conventions

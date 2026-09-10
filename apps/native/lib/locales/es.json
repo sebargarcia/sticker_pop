@@ -110,14 +110,15 @@
 		"packDialog": "Comparte tu pack de WhatsApp",
 		"packName": "Pack de StickerPop",
 		"successTitle": "¡Stickers exportados!",
-		"successMessage": "{{count}} stickers listos para WhatsApp (WebP 512×512). Impórtalos a WhatsApp con tu app de stickers favorita.",
+		"successMessage": "{{count}} stickers listos para WhatsApp (WebP 512×512) empaquetados en un archivo .wasticker.",
+		"cappedMessage": "Solo los primeros {{count}} de {{total}} stickers entran en un pack de WhatsApp (máx. 30). El resto se omitió.",
 		"partialTitle": "Exportado con avisos",
-		"partialMessage": "{{valid}} de {{count}} stickers están bajo 100 KB. Los archivos están guardados y listos para compartir.",
+		"partialMessage": "Solo {{valid}} de {{count}} stickers están bajo 100 KB, así que el pack no se compartió.",
 		"tooFewTitle": "Faltan stickers",
 		"tooFewMessage": "Un pack de WhatsApp necesita al menos 3 stickers. Genera o guarda más primero.",
 		"failedTitle": "Error al exportar",
 		"failedMessage": "No se pudieron exportar los stickers de WhatsApp.",
-		"howTo": "WebP 512×512 • menos de 100 KB cada uno. Agrégalos a WhatsApp con una app de stickers."
+		"howTo": "WebP 512×512 • menos de 100 KB cada uno. Se exporta como un pack .wasticker para importar con una app de stickers."
 	},
 	"gemini": {
 		"missingKey": "Falta EXPO_PUBLIC_GEMINI_API_KEY. Agrégala en apps/native/.env (consíguela en https://aistudio.google.com)."

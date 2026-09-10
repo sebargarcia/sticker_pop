@@ -1,6 +1,9 @@
+import { File } from "expo-file-system";
 import * as FileSystem from "expo-file-system/legacy";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import * as Sharing from "expo-sharing";
+
+import { createZip, type ZipEntry } from "./zip";
 
 /**
  * WhatsApp sticker export.
@@ -11,11 +14,11 @@ import * as Sharing from "expo-sharing";
  * - pack: 3-30 stickers, all static (we only produce static)
  *
  * This module converts the app's PNG stickers (Gemini output or saved files)
- * into spec-compliant WebP files and groups them into an exportable pack
- * folder with a WhatsApp-compatible manifest (`pack.json`, same shape as
- * `contents.json` / `sticker_packs.wasticker` for a future native
- * "Add to WhatsApp" provider). Sharing stays image-based (`lib/share.ts`
- * is untouched) — this is the separate "valid WhatsApp sticker" path.
+ * into spec-compliant WebP files, groups them into a pack folder with a
+ * WhatsApp `contents.json` manifest and packs that folder into a `.wasticker`
+ * archive (a ZIP) that the system sheet can hand to WhatsApp / a sticker app.
+ * Sharing stays image-based (`lib/share.ts` is untouched) — this is the
+ * separate "valid WhatsApp sticker" path.
  */
 
 export const WHATSAPP_STICKER_SIZE = 512;
@@ -24,6 +27,7 @@ export const WHATSAPP_MAX_STICKER_BYTES = 100 * 1024;
 export const WHATSAPP_MAX_TRAY_BYTES = 50 * 1024;
 export const WHATSAPP_MIN_PACK_SIZE = 3;
 export const WHATSAPP_MAX_PACK_SIZE = 30;
+export const WHATSAPP_ARCHIVE_NAME = "StickerPop.wasticker";
 
 const COMPRESS_STEPS = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3];
 
@@ -36,7 +40,7 @@ export interface WhatsAppStickerSource {
 export interface WhatsAppStickerFile {
 	emotion: string;
 	emoji: string[];
-	/** Final pack file, e.g. `…/whatsapp/<packId>/sticker-00-happy.webp`. */
+	/** Final pack file, e.g. `…/whatsapp/pack/sticker-00-happy.webp`. */
 	fileUri: string;
 	size: number;
 	width: number;
@@ -51,7 +55,12 @@ export interface WhatsAppPack {
 	stickers: WhatsAppStickerFile[];
 	trayUri: string;
 	traySize: number;
+	/** `contents.json` inside the pack folder. */
 	manifestUri: string;
+	/** Shareable `.wasticker` archive (the pack folder zipped). */
+	archiveUri: string;
+	/** How many sources were offered; more than `stickers.length` means the cap hit. */
+	sourceCount: number;
 	valid: boolean;
 	validationMessage: string | null;
 }
@@ -95,6 +104,17 @@ async function ensureDir(dirUri: string): Promise<void> {
 	if (!info.exists) {
 		await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
 	}
+}
+
+/** Empties a directory so repeated exports reuse the same paths. */
+async function ensureCleanDir(dirUri: string): Promise<void> {
+	await FileSystem.deleteAsync(dirUri, { idempotent: true });
+	await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
+}
+
+async function copyOverwrite(from: string, to: string): Promise<void> {
+	await FileSystem.deleteAsync(to, { idempotent: true });
+	await FileSystem.copyAsync({ from, to });
 }
 
 /**
@@ -150,7 +170,7 @@ export async function convertToWhatsAppSticker(
 		SaveFormat.WEBP,
 		WHATSAPP_MAX_STICKER_BYTES,
 	);
-	await FileSystem.copyAsync({ from: rendered.uri, to: destUri });
+	await copyOverwrite(rendered.uri, destUri);
 	const size = await fileSize(destUri);
 	return {
 		emotion,
@@ -165,7 +185,8 @@ export async function convertToWhatsAppSticker(
 
 /**
  * Converts one sticker into the shared `whatsapp/single/` folder and
- * returns the converted file. Thin wrapper so screens stay declarative.
+ * returns the converted file. Re-exporting the same emotion overwrites the
+ * previous file, so repeated exports don't accumulate.
  */
 export async function exportSingleSticker(
 	sourceUri: string,
@@ -176,15 +197,16 @@ export async function exportSingleSticker(
 	}
 	const dirUri = `${FileSystem.documentDirectory}whatsapp/single/`;
 	await ensureDir(dirUri);
-	const destUri = `${dirUri}sticker-${slugify(emotion)}-${Date.now()}.webp`;
+	const destUri = `${dirUri}sticker-${slugify(emotion)}.webp`;
 	return convertToWhatsAppSticker(sourceUri, destUri, emotion);
 }
 
 /**
- * Exports sources as a WhatsApp sticker pack folder:
- * `<documentDirectory>whatsapp/<packId>/` with `sticker-*.webp`,
- * `tray.png` (96x96) and `pack.json` (WhatsApp `contents.json`-shaped
- * manifest for a future native provider).
+ * Exports sources as a WhatsApp sticker pack:
+ * `<documentDirectory>whatsapp/pack/` with `sticker-*.webp`, `tray.png`
+ * and `contents.json`, zipped into
+ * `<documentDirectory>whatsapp/StickerPop.wasticker`. The pack folder is
+ * rebuilt on every export so the output paths stay stable.
  */
 export async function exportStickerPack(
 	sources: WhatsAppStickerSource[],
@@ -198,20 +220,17 @@ export async function exportStickerPack(
 			`Need at least ${WHATSAPP_MIN_PACK_SIZE} stickers for a WhatsApp pack (got ${sources.length}).`,
 		);
 	}
-	if (sources.length > WHATSAPP_MAX_PACK_SIZE) {
-		throw new Error(
-			`WhatsApp packs hold at most ${WHATSAPP_MAX_PACK_SIZE} stickers (got ${sources.length}).`,
-		);
-	}
+	const limited = sources.slice(0, WHATSAPP_MAX_PACK_SIZE);
 
 	const id = `stickerpop-${Date.now()}`;
-	const dirUri = `${FileSystem.documentDirectory}whatsapp/${id}/`;
-	await ensureDir(dirUri);
+	const rootUri = `${FileSystem.documentDirectory}whatsapp/`;
+	const dirUri = `${rootUri}pack/`;
+	const archiveUri = `${rootUri}${WHATSAPP_ARCHIVE_NAME}`;
+	await ensureCleanDir(dirUri);
 
 	const stickers: WhatsAppStickerFile[] = [];
-	const limited = sources.slice(0, WHATSAPP_MAX_PACK_SIZE);
 	for (let i = 0; i < limited.length; i++) {
-		const source = limited[i];
+		const source = limited[i] as WhatsAppStickerSource;
 		const fileName = `sticker-${String(i).padStart(2, "0")}-${slugify(source.emotion)}.webp`;
 		const destUri = `${dirUri}${fileName}`;
 		const sticker = await convertToWhatsAppSticker(
@@ -226,30 +245,46 @@ export async function exportStickerPack(
 	// tray well under 50 KB and matches both platform samples).
 	const trayUri = `${dirUri}tray.png`;
 	const trayRendered = await renderFitting(
-		limited[0].sourceUri,
+		(stickers[0] as WhatsAppStickerFile).fileUri,
 		WHATSAPP_TRAY_SIZE,
 		SaveFormat.PNG,
 		WHATSAPP_MAX_TRAY_BYTES,
 	);
-	await FileSystem.copyAsync({ from: trayRendered.uri, to: trayUri });
+	await copyOverwrite(trayRendered.uri, trayUri);
 	const traySize = await fileSize(trayUri);
 
 	const manifest = {
-		identifier: id,
+		android_play_store_link: "",
+		ios_app_download_link: "",
 		name: packName,
 		publisher: "StickerPop",
+		identifier: id,
 		tray_image_file: "tray.png",
 		image_data_version: "1",
+		avoid_cache: false,
+		animated_sticker_pack: false,
 		stickers: stickers.map((s) => ({
 			image_file: s.fileUri.split("/").pop(),
 			emojis: s.emoji,
 		})),
 	};
-	const manifestUri = `${dirUri}pack.json`;
-	await FileSystem.writeAsStringAsync(
-		manifestUri,
-		JSON.stringify(manifest, null, 2),
-	);
+	const manifestJson = JSON.stringify(manifest, null, 2);
+	const manifestUri = `${dirUri}contents.json`;
+	await FileSystem.writeAsStringAsync(manifestUri, manifestJson);
+
+	const entries: ZipEntry[] = [
+		{ name: "contents.json", data: new TextEncoder().encode(manifestJson) },
+		{ name: "tray.png", data: await new File(trayUri).bytes() },
+	];
+	for (const sticker of stickers) {
+		entries.push({
+			name: sticker.fileUri.split("/").pop() as string,
+			data: await new File(sticker.fileUri).bytes(),
+		});
+	}
+	const archive = new File(archiveUri);
+	archive.create({ overwrite: true, intermediates: true });
+	archive.write(createZip(entries));
 
 	const oversized = stickers.filter((s) => !s.withinLimit);
 	const trayOk = traySize <= WHATSAPP_MAX_TRAY_BYTES;
@@ -268,22 +303,32 @@ export async function exportStickerPack(
 		trayUri,
 		traySize,
 		manifestUri,
+		archiveUri,
+		sourceCount: sources.length,
 		valid,
 		validationMessage,
 	};
 }
 
-/** Shares a single WebP sticker file via the system sheet (`image/webp`). */
-export async function shareWebpFile(
+/** Shares a local file via the system sheet. */
+export async function shareFile(
 	fileUri: string,
-	dialogTitle: string,
+	options: { mimeType: string; dialogTitle: string; UTI?: string },
 ): Promise<"shared" | "cancelled"> {
 	const available = await Sharing.isAvailableAsync();
 	if (!available) throw new Error("Sharing is not available on this device.");
-	await Sharing.shareAsync(fileUri, {
+	await Sharing.shareAsync(fileUri, options);
+	return "shared";
+}
+
+/** Shares a single WebP sticker file via the system sheet (`image/webp`). */
+export function shareWebpFile(
+	fileUri: string,
+	dialogTitle: string,
+): Promise<"shared" | "cancelled"> {
+	return shareFile(fileUri, {
 		mimeType: "image/webp",
 		dialogTitle,
 		UTI: "org.webmproject.webp",
 	});
-	return "shared";
 }

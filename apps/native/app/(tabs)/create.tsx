@@ -33,6 +33,7 @@ import { saveSticker } from "@/lib/stickers-store";
 import {
 	exportSingleSticker,
 	exportStickerPack,
+	shareFile,
 	shareWebpFile,
 } from "@/lib/whatsapp";
 
@@ -286,12 +287,7 @@ export default function CreateScreen() {
 				})),
 				t("whatsapp.packName"),
 			);
-			if (pack.valid) {
-				Alert.alert(
-					t("whatsapp.successTitle"),
-					t("whatsapp.successMessage", { count: pack.stickers.length }),
-				);
-			} else {
+			if (!pack.valid) {
 				const validCount = pack.stickers.filter((s) => s.withinLimit).length;
 				Alert.alert(
 					t("whatsapp.partialTitle"),
@@ -300,7 +296,21 @@ export default function CreateScreen() {
 						count: pack.stickers.length,
 					}),
 				);
+				return;
 			}
+			await shareFile(pack.archiveUri, {
+				mimeType: "application/octet-stream",
+				dialogTitle: t("whatsapp.packDialog"),
+			});
+			Alert.alert(
+				t("whatsapp.successTitle"),
+				pack.stickers.length < pack.sourceCount
+					? t("whatsapp.cappedMessage", {
+							count: pack.stickers.length,
+							total: pack.sourceCount,
+						})
+					: t("whatsapp.successMessage", { count: pack.stickers.length }),
+			);
 		} catch (e) {
 			Alert.alert(
 				t("whatsapp.failedTitle"),

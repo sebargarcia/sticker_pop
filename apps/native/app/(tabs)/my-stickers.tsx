@@ -25,6 +25,7 @@ import {
 import {
 	exportSingleSticker,
 	exportStickerPack,
+	shareFile,
 	shareWebpFile,
 } from "@/lib/whatsapp";
 
@@ -111,7 +112,7 @@ export default function MyStickersScreen() {
 		}
 	}
 
-	/** Exports all saved stickers (3-30) as a validated WhatsApp pack. */
+	/** Exports saved stickers as a validated WhatsApp pack (capped at 30). */
 	async function handleExportPack() {
 		if (isExporting) return;
 		if (stickers.length < 3) {
@@ -121,17 +122,10 @@ export default function MyStickersScreen() {
 		setIsExporting(true);
 		try {
 			const pack = await exportStickerPack(
-				stickers
-					.slice(0, 30)
-					.map((s) => ({ sourceUri: s.fileUri, emotion: s.emotion })),
+				stickers.map((s) => ({ sourceUri: s.fileUri, emotion: s.emotion })),
 				t("whatsapp.packName"),
 			);
-			if (pack.valid) {
-				Alert.alert(
-					t("whatsapp.successTitle"),
-					t("whatsapp.successMessage", { count: pack.stickers.length }),
-				);
-			} else {
+			if (!pack.valid) {
 				const validCount = pack.stickers.filter((s) => s.withinLimit).length;
 				Alert.alert(
 					t("whatsapp.partialTitle"),
@@ -140,7 +134,21 @@ export default function MyStickersScreen() {
 						count: pack.stickers.length,
 					}),
 				);
+				return;
 			}
+			await shareFile(pack.archiveUri, {
+				mimeType: "application/octet-stream",
+				dialogTitle: t("whatsapp.packDialog"),
+			});
+			Alert.alert(
+				t("whatsapp.successTitle"),
+				pack.stickers.length < pack.sourceCount
+					? t("whatsapp.cappedMessage", {
+							count: pack.stickers.length,
+							total: pack.sourceCount,
+						})
+					: t("whatsapp.successMessage", { count: pack.stickers.length }),
+			);
 		} catch (e) {
 			Alert.alert(
 				t("whatsapp.failedTitle"),
