@@ -10,6 +10,24 @@ Monorepo workspace (`bun`, `turbo`); this guide is scoped to `apps/native`.
 - `bun run check-types` — `tsc --noEmit` (run after every change)
 - `bunx expo prebuild` — regenerate native projects (needed after changing `app.json` plugins/permissions)
 
+## Running on Android emulator
+
+- The project uses a dev client (`com.anonymous.sticker_pop`), NOT Expo Go. If deep
+  links open Expo Go instead (red screens about missing native modules), force-stop it
+  and launch our client explicitly:
+  `adb shell am start -n com.anonymous.sticker_pop/.MainActivity`, then Connect the
+  launcher to `http://10.0.2.2:8081` (Metro must be running: it starts with
+  `bun run android`, or standalone via `bun run dev`).
+- If the UI looks stale (old strings/layout), the app is showing a cached bundle:
+  reload from Metro (dev menu or relaunch while Metro runs). Tab option changes need a
+  full reload, not just Fast Refresh.
+- After adding/upgrading native modules, if the app throws
+  "Cannot find native module 'X'" on a fresh-looking build: `rm -rf android/app/build
+  android/build android/app/.cxx` then rebuild (`bun run android`, or
+  `cd android && ./gradlew assembleDebug` + `adb install -r`). Verify the installed
+  binary matches the build: compare `md5` of `app-debug.apk` with
+  `adb shell pm path` + `md5sum` on device.
+
 ## Env
 
 - Copy `.env.example` to `.env` (gitignored, never commit it).
