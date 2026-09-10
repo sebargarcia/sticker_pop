@@ -1,59 +1,59 @@
 {
-  "name": "sticker_pop",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "apps/*",
-      "packages/*"
-    ],
-    "catalog": {
-      "dotenv": "^17.4.2",
-      "zod": "^4.4.3",
-      "@types/node": "^26.2.0",
-      "@cloudflare/workers-types": "^5.20260728.1",
-      "better-auth": "1.7.1",
-      "lucide-react": "^1.27.0",
-      "next-themes": "^0.4.6",
-      "sonner": "^2.0.7",
-      "tailwindcss": "^4.3.3",
-      "@tanstack/react-form": "^1.33.2",
-      "@types/react-dom": "^19.2.3",
-      "@better-auth/expo": "1.7.1"
-    }
-  },
-  "type": "module",
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "check-types": "turbo run check-types",
-    "dev:native": "turbo run dev -F native --",
-    "dev:web": "turbo run dev -F web --",
-    "dev:server": "turbo run dev -F server --",
-    "db:generate": "turbo run db:generate -F @sticker_pop/db --",
-    "deploy": "turbo run deploy -F @sticker_pop/infra --",
-    "destroy": "turbo run destroy -F @sticker_pop/infra --",
-    "check": "biome check --write .",
-    "prepare": "husky"
-  },
-  "dependencies": {
-    "@sticker_pop/env": "workspace:*",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^2.5.11",
-    "@cloudflare/workers-types": "catalog:",
-    "@sticker_pop/config": "workspace:*",
-    "@types/node": "catalog:",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.4.1",
-    "turbo": "^2.10.12",
-    "typescript": "^6.0.3"
-  },
-  "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
-      "biome check --write ."
-    ]
-  },
-  "packageManager": "bun@1.3.14"
+	"name": "sticker_pop",
+	"private": true,
+	"workspaces": {
+		"packages": [
+			"apps/*",
+			"packages/*"
+		],
+		"catalog": {
+			"dotenv": "^17.4.2",
+			"zod": "^4.4.3",
+			"@types/node": "^26.2.0",
+			"@cloudflare/workers-types": "^5.20260728.1",
+			"better-auth": "1.7.1",
+			"lucide-react": "^1.27.0",
+			"next-themes": "^0.4.6",
+			"sonner": "^2.0.7",
+			"tailwindcss": "^4.3.3",
+			"@tanstack/react-form": "^1.33.2",
+			"@types/react-dom": "^19.2.3",
+			"@better-auth/expo": "1.7.1"
+		}
+	},
+	"type": "module",
+	"scripts": {
+		"dev": "turbo run dev",
+		"build": "turbo run build",
+		"check-types": "turbo run check-types",
+		"dev:native": "turbo run dev -F native --",
+		"dev:web": "turbo run dev -F web --",
+		"dev:server": "turbo run dev -F server --",
+		"db:generate": "turbo run db:generate -F @sticker_pop/db --",
+		"deploy": "turbo run deploy -F @sticker_pop/infra --",
+		"destroy": "turbo run destroy -F @sticker_pop/infra --",
+		"check": "biome check --write .",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"@sticker_pop/env": "workspace:*",
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.5.11",
+		"@cloudflare/workers-types": "catalog:",
+		"@sticker_pop/config": "workspace:*",
+		"@types/node": "catalog:",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.4.1",
+		"turbo": "^2.10.12",
+		"typescript": "^6.0.3"
+	},
+	"lint-staged": {
+		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+			"biome check --write"
+		]
+	},
+	"packageManager": "bun@1.3.14"
 }
