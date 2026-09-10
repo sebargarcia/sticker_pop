@@ -18,14 +18,20 @@ export interface SourcePhoto {
 	mimeType: string;
 }
 
-const MODEL = "gemini-2.5-flash-image-preview";
+/**
+ * Image model. `gemini-2.5-flash-image-preview` (used by the original web demo)
+ * has been retired by Google — the stable successor is `gemini-2.5-flash-image`.
+ * Override per-environment with EXPO_PUBLIC_GEMINI_MODEL if it ever moves again.
+ */
+const DEFAULT_MODEL = "gemini-2.5-flash-image";
 
 function apiUrl() {
 	const key = env.EXPO_PUBLIC_GEMINI_API_KEY;
 	if (!key) {
 		throw new Error(i18n.t("gemini.missingKey"));
 	}
-	return `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`;
+	const model = env.EXPO_PUBLIC_GEMINI_MODEL ?? DEFAULT_MODEL;
+	return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
 }
 
 // --- Prompt builders (ported 1:1 from docs/gemstickers_app.tsx) ---
