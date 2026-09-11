@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { ViewShotRef } from "react-native-view-shot";
+import { EmotionSelector } from "@/components/emotion-selector";
 import { StickerGrid } from "@/components/sticker-grid";
 import { StickerPopButton } from "@/components/sticker-pop-button";
 import { StickerSheetView } from "@/components/sticker-sheet";
@@ -43,6 +44,9 @@ export default function CreateScreen() {
 	const { t } = useTranslation();
 	const [photo, setPhoto] = useState<SourcePhoto | null>(null);
 	const [style, setStyle] = useState<StickerStyleId>("pop-art");
+	const [selectedEmotions, setSelectedEmotions] = useState<string[]>(
+		STICKER_EMOTIONS.map((e) => e.key),
+	);
 	const [stickers, setStickers] = useState<GeneratedSticker[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -107,26 +111,42 @@ export default function CreateScreen() {
 		}
 	}
 
+	function toggleEmotion(emotion: string) {
+		setSelectedEmotions((prev) =>
+			prev.includes(emotion)
+				? prev.filter((e) => e !== emotion)
+				: [...prev, emotion],
+		);
+	}
+
+	function selectAllEmotions() {
+		setSelectedEmotions(STICKER_EMOTIONS.map((e) => e.key));
+	}
+
+	function clearAllEmotions() {
+		setSelectedEmotions([]);
+	}
+
 	async function handleGenerate() {
 		if (!photo) {
 			setError(t("create.needPhoto"));
 			return;
 		}
+		if (selectedEmotions.length === 0) {
+			setError(t("create.needSelection"));
+			return;
+		}
 		setIsLoading(true);
 		setError(null);
 		setStickers(
-			STICKER_EMOTIONS.map((e) => ({
-				emotion: e.key,
+			selectedEmotions.map((emotion) => ({
+				emotion,
 				imageUrl: null,
 				isLoading: true,
 			})),
 		);
 		try {
-			const promises = generateStickerSet(
-				photo,
-				style,
-				STICKER_EMOTIONS.map((e) => e.key),
-			);
+			const promises = generateStickerSet(photo, style, selectedEmotions);
 			const results = await Promise.all(promises);
 			setStickers(results);
 			const firstError = results.find((r) => r.error)?.error;
@@ -409,11 +429,24 @@ export default function CreateScreen() {
 				<StyleCarousel selected={style} onSelect={setStyle} />
 			</View>
 
+			<View className="mt-4">
+				<EmotionSelector
+					selected={selectedEmotions}
+					onToggle={toggleEmotion}
+					onSelectAll={selectAllEmotions}
+					onClearAll={clearAllEmotions}
+				/>
+			</View>
+
 			<StickerPopButton
-				title={isLoading ? t("create.generating") : t("create.generate")}
+				title={
+					isLoading
+						? t("create.generating")
+						: t("create.generateCount", { count: selectedEmotions.length })
+				}
 				icon="sparkles"
 				loading={isLoading}
-				disabled={!photo || isLoading}
+				disabled={!photo || isLoading || selectedEmotions.length === 0}
 				onPress={handleGenerate}
 				className="mt-4"
 			/>
