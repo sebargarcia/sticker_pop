@@ -1,0 +1,480 @@
+{
+	"components": [
+		{
+			"css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 14px 28px; background: var(--color-pop-yellow, #FFD600); color: var(--color-sticker-navy, #0B1533); border: 2px solid var(--color-sticker-navy, #0B1533); border-radius: 9999px; font-family: Poppins, system-ui, sans-serif; font-weight: 600; font-size: 17px; line-height: 1.35; letter-spacing: 0.01em; transition: transform 0.15s ease, opacity 0.15s ease, background 0.2s ease; cursor: pointer; } .ds-btn-primary:hover { filter: brightness(1.03); } .ds-btn-primary:focus-visible { outline: 3px solid var(--color-sticker-navy, #0B1533); outline-offset: 2px; } .ds-btn-primary:active { transform: scale(0.97); opacity: 0.9; } .ds-btn-primary svg { width: 20px; height: 20px; }",
+			"description": "The one hero action per screen. Yellow ground, navy text, hard outline.",
+			"html": "<button class=\"ds-btn-primary\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l1.9 5.8L19.7 10l-5.8 1.9L12 17.7l-1.9-5.8L4.3 10l5.8-1.9z\"/></svg>Crear Sticker</button>",
+			"kind": "button",
+			"name": "Primary Button",
+			"refersTo": "button-primary"
+		},
+		{
+			"css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 14px 28px; background: #FFFFFF; color: var(--color-sticker-navy, #0B1533); border: 2px solid var(--color-sticker-navy, #0B1533); border-radius: 9999px; font-family: Poppins, system-ui, sans-serif; font-weight: 600; font-size: 17px; transition: transform 0.15s ease, opacity 0.15s ease; cursor: pointer; } .ds-btn-secondary:hover { background: #F5F7FA; } .ds-btn-secondary:focus-visible { outline: 3px solid var(--color-sticker-navy, #0B1533); outline-offset: 2px; } .ds-btn-secondary:active { transform: scale(0.97); opacity: 0.9; }",
+			"description": "Quiet sibling for secondary paths like viewing the sheet.",
+			"html": "<button class=\"ds-btn-secondary\">Ver Hoja de Stickers</button>",
+			"kind": "button",
+			"name": "Secondary Button",
+			"refersTo": "button-secondary"
+		},
+		{
+			"css": ".ds-btn-dark { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 14px 28px; background: var(--color-sticker-navy, #0B1533); color: #FFFFFF; border: 2px solid var(--color-sticker-navy, #0B1533); border-radius: 9999px; font-family: Poppins, system-ui, sans-serif; font-weight: 600; font-size: 17px; transition: transform 0.15s ease, opacity 0.15s ease; cursor: pointer; } .ds-btn-dark:hover { filter: brightness(1.15); } .ds-btn-dark:focus-visible { outline: 3px solid var(--color-pop-yellow, #FFD600); outline-offset: 2px; } .ds-btn-dark:active { transform: scale(0.97); opacity: 0.9; }",
+			"description": "Export actions: WhatsApp packs and single-sticker exports.",
+			"html": "<button class=\"ds-btn-dark\">Exportar pack para WhatsApp</button>",
+			"kind": "button",
+			"name": "Dark Button",
+			"refersTo": "button-dark"
+		},
+		{
+			"css": ".ds-btn-wa { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 14px 28px; background: #25D366; color: #FFFFFF; border: 2px solid var(--color-sticker-navy, #0B1533); border-radius: 9999px; font-family: Poppins, system-ui, sans-serif; font-weight: 600; font-size: 17px; transition: transform 0.15s ease, opacity 0.15s ease; cursor: pointer; } .ds-btn-wa:hover { filter: brightness(1.05); } .ds-btn-wa:focus-visible { outline: 3px solid var(--color-sticker-navy, #0B1533); outline-offset: 2px; } .ds-btn-wa:active { transform: scale(0.97); opacity: 0.9; }",
+			"description": "WhatsApp share paths only. Never a general accent.",
+			"html": "<button class=\"ds-btn-wa\">Enviar por WhatsApp</button>",
+			"kind": "button",
+			"name": "WhatsApp Button",
+			"refersTo": "button-whatsapp"
+		},
+		{
+			"css": ".ds-hero { background: #FFFFFF; border: 2px solid var(--color-sticker-navy, #0B1533); border-radius: 28px; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(11,21,51,0.12); max-width: 420px; } .ds-hero h2 { font-family: Poppins, system-ui, sans-serif; font-weight: 900; font-size: 26px; line-height: 1.23; color: var(--color-sticker-navy, #0B1533); margin: 8px 0; } .ds-hero p { font-family: Poppins, system-ui, sans-serif; font-weight: 500; font-size: 15px; color: #6B7280; margin: 0 0 18px; }",
+			"description": "Home hero and empty states: white card on paper, navy outline, soft lift.",
+			"html": "<div class=\"ds-hero\"><h2>Convierte tus ideas en stickers divertidos.</h2><p>Crea, personaliza y comparte stickers en segundos.</p></div>",
+			"kind": "card",
+			"name": "Hero Card",
+			"refersTo": "button-primary"
+		},
+		{
+			"css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 9999px; border: 2px solid var(--color-sticker-navy, #0B1533); background: var(--color-sticker-navy, #0B1533); color: #FFFFFF; font-family: Poppins, system-ui, sans-serif; font-weight: 700; font-size: 14px; transition: opacity 0.15s ease; cursor: pointer; } .ds-chip svg { width: 18px; height: 18px; } .ds-chip--off { background: #FFFFFF; color: var(--color-sticker-navy, #0B1533); border-color: #E2E6EB; font-weight: 600; } .ds-chip:hover { filter: brightness(1.08); } .ds-chip:focus-visible { outline: 3px solid var(--color-pop-yellow, #FFD600); outline-offset: 2px; } .ds-chip:active { opacity: 0.8; }",
+			"description": "Emotion filter chips. Selected is navy-on; unselected is white with gray border.",
+			"html": "<button class=\"ds-chip\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M9 12l2 2 4-4\"/><circle cx=\"12\" cy=\"12\" r=\"9\"/></svg>Riendo</button>",
+			"kind": "chip",
+			"name": "Emotion Chip",
+			"refersTo": "button-dark"
+		},
+		{
+			"css": ".ds-tile { width: 120px; text-align: center; } .ds-tile-art { width: 104px; height: 104px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: #FFF6CC; border: 3px solid var(--color-sticker-navy, #0B1533); border-radius: 24px; transform: rotate(-3deg); box-shadow: 0 1px 3px rgba(11,21,51,0.12); font-size: 44px; } .ds-tile span { display: block; margin-top: 8px; font-family: Poppins, system-ui, sans-serif; font-weight: 800; font-size: 13px; color: var(--color-sticker-navy, #0B1533); } .ds-tile--off .ds-tile-art { background: #FFFFFF; border-color: #E2E6EB; } .ds-tile--off span { color: #6B7280; font-weight: 600; }",
+			"description": "Style carousel tiles. Selected tilts with warm fill and navy border.",
+			"html": "<div class=\"ds-tile\"><div class=\"ds-tile-art\">🦖</div><span>Dino</span></div>",
+			"kind": "card",
+			"name": "Style Tile",
+			"refersTo": "button-secondary"
+		},
+		{
+			"css": ".ds-cell { width: 160px; } .ds-cell-art { aspect-ratio: 1; background: #FFFFFF; border: 3px solid #FFFFFF; border-radius: 20px; box-shadow: 0 4px 12px rgba(11,21,51,0.12); display: flex; align-items: center; justify-content: center; font-size: 64px; } .ds-cell span { display: block; margin-top: 8px; text-align: center; font-family: Poppins, system-ui, sans-serif; font-weight: 700; font-size: 12px; color: var(--color-sticker-navy, #0B1533); } .ds-cell:hover .ds-cell-art { transform: translateY(-2px); } .ds-cell:focus-visible { outline: 3px solid var(--color-pop-yellow, #FFD600); outline-offset: 2px; }",
+			"description": "Die-cut sticker cell: white border, soft lift, navy caption.",
+			"html": "<div class=\"ds-cell\"><div class=\"ds-cell-art\">😂</div><span>Riendo</span></div>",
+			"kind": "card",
+			"name": "Sticker Cell",
+			"refersTo": "button-secondary"
+		},
+		{
+			"css": ".ds-fab { width: 56px; height: 56px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; background: var(--color-pop-yellow, #FFD600); border: 3px solid var(--color-sticker-navy, #0B1533); box-shadow: 0 4px 12px rgba(11,21,51,0.16); cursor: pointer; transition: transform 0.15s ease; } .ds-fab svg { width: 26px; height: 26px; stroke: var(--color-sticker-navy, #0B1533); } .ds-fab:hover { transform: translateY(-2px); } .ds-fab:focus-visible { outline: 3px solid var(--color-sticker-navy, #0B1533); outline-offset: 2px; } .ds-fab:active { transform: scale(0.97); } .ds-fab--idle { background: var(--color-sticker-navy, #0B1533); border-color: var(--color-pop-yellow, #FFD600); } .ds-fab--idle svg { stroke: #FFFFFF; }",
+			"description": "Center Create tab action. Yellow-on-navy when focused, navy-on-yellow when idle.",
+			"html": "<button class=\"ds-fab\" aria-label=\"Crear\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l1.9 5.8L19.7 10l-5.8 1.9L12 17.7l-1.9-5.8L4.3 10l5.8-1.9z\"/></svg></button>",
+			"kind": "button",
+			"name": "Create FAB",
+			"refersTo": "button-primary"
+		}
+	],
+	"extensions": {
+		"breakpoints": [{ "name": "phone", "value": "390px" }],
+		"colorMeta": {
+			"bubblegum-pink": {
+				"canonical": "#FF4D8D",
+				"displayName": "Bubblegum Pink",
+				"role": "tertiary",
+				"tonalRamp": [
+					"#4A0E26",
+					"#7A1A40",
+					"#A82355",
+					"#D1346E",
+					"#FF4D8D",
+					"#FF7DAD",
+					"#FFACC8",
+					"#FFDBE7"
+				]
+			},
+			"burst-cyan": {
+				"canonical": "#00B8E6",
+				"displayName": "Burst Cyan",
+				"role": "tertiary",
+				"tonalRamp": [
+					"#06303C",
+					"#0A4E61",
+					"#0E6C85",
+					"#1290AA",
+					"#00B8E6",
+					"#3FCCEE",
+					"#7FDEF4",
+					"#BFF0FA"
+				]
+			},
+			"disabled-bg": {
+				"canonical": "#F1F2F4",
+				"displayName": "Disabled Cloud",
+				"role": "neutral",
+				"tonalRamp": [
+					"#3A3D42",
+					"#5A5E65",
+					"#7A7F87",
+					"#9AA0A8",
+					"#C9CDD3",
+					"#E2E6EB",
+					"#F1F2F4",
+					"#FAFBFC"
+				]
+			},
+			"disabled-border": {
+				"canonical": "#C9CDD3",
+				"displayName": "Disabled Border",
+				"role": "neutral",
+				"tonalRamp": [
+					"#3A3D42",
+					"#5A5E65",
+					"#7A7F87",
+					"#9AA0A8",
+					"#C9CDD3",
+					"#E2E6EB",
+					"#F1F2F4",
+					"#FAFBFC"
+				]
+			},
+			"disabled-text": {
+				"canonical": "#9AA0A8",
+				"displayName": "Disabled Text",
+				"role": "neutral",
+				"tonalRamp": [
+					"#3A3D42",
+					"#5A5E65",
+					"#7A7F87",
+					"#9AA0A8",
+					"#C9CDD3",
+					"#E2E6EB",
+					"#F1F2F4",
+					"#FAFBFC"
+				]
+			},
+			"error": {
+				"canonical": "#D92D20",
+				"displayName": "Error Red",
+				"role": "neutral",
+				"tonalRamp": [
+					"#3D0D0A",
+					"#611511",
+					"#861D17",
+					"#AB251D",
+					"#D92D20",
+					"#E35D52",
+					"#EC8E87",
+					"#F6C0BB"
+				]
+			},
+			"error-bg": {
+				"canonical": "#FFF1F0",
+				"displayName": "Error Wash",
+				"role": "neutral",
+				"tonalRamp": [
+					"#3D0D0A",
+					"#861D17",
+					"#D92D20",
+					"#E35D52",
+					"#EC8E87",
+					"#F6C0BB",
+					"#FDE3E1",
+					"#FFF1F0"
+				]
+			},
+			"error-border": {
+				"canonical": "#F3B7B3",
+				"displayName": "Error Blush",
+				"role": "neutral",
+				"tonalRamp": [
+					"#611511",
+					"#AB251D",
+					"#D92D20",
+					"#E35D52",
+					"#EC8E87",
+					"#F3B7B3",
+					"#FAD9D7",
+					"#FFF1F0"
+				]
+			},
+			"ink-muted": {
+				"canonical": "#6B7280",
+				"displayName": "Ink Muted",
+				"role": "neutral",
+				"tonalRamp": [
+					"#1F2329",
+					"#33383F",
+					"#4A5058",
+					"#6B7280",
+					"#8A8F98",
+					"#9AA0A8",
+					"#C9CDD3",
+					"#E8ECF1"
+				]
+			},
+			"leaf-green": {
+				"canonical": "#34C759",
+				"displayName": "Leaf Green",
+				"role": "tertiary",
+				"tonalRamp": [
+					"#0B3517",
+					"#134E22",
+					"#1B6730",
+					"#249040",
+					"#34C759",
+					"#5FD47E",
+					"#93E2A8",
+					"#C6F0D1"
+				]
+			},
+			"line-soft": {
+				"canonical": "#E2E6EB",
+				"displayName": "Line Soft",
+				"role": "neutral",
+				"tonalRamp": [
+					"#3A3D42",
+					"#6B7280",
+					"#9AA0A8",
+					"#C9CDD3",
+					"#E2E6EB",
+					"#E8ECF1",
+					"#F1F2F4",
+					"#FAFBFC"
+				]
+			},
+			"paper-bg": {
+				"canonical": "#F5F7FA",
+				"displayName": "Paper BG",
+				"role": "secondary",
+				"tonalRamp": [
+					"#3A3D42",
+					"#5A5E65",
+					"#8A8F98",
+					"#C9CDD3",
+					"#E8ECF1",
+					"#F1F2F4",
+					"#F5F7FA",
+					"#FFFFFF"
+				]
+			},
+			"pop-yellow": {
+				"canonical": "#FFD600",
+				"displayName": "Pop Yellow",
+				"role": "primary",
+				"tonalRamp": [
+					"#4A3A00",
+					"#7A6000",
+					"#A88600",
+					"#D1AB00",
+					"#FFD600",
+					"#FFDF3D",
+					"#FFE97A",
+					"#FFF6CC"
+				]
+			},
+			"sheet-cream": {
+				"canonical": "#FFF8DC",
+				"displayName": "Sheet Cream",
+				"role": "secondary",
+				"tonalRamp": [
+					"#4A3F10",
+					"#7A6820",
+					"#A88F30",
+					"#D1B440",
+					"#FFF8DC",
+					"#FFFAE6",
+					"#FFFCEF",
+					"#FFFFF7"
+				]
+			},
+			"sticker-navy": {
+				"canonical": "#0B1533",
+				"displayName": "Sticker Navy",
+				"role": "primary",
+				"tonalRamp": [
+					"#060A1A",
+					"#0B1533",
+					"#1A2547",
+					"#2C3A63",
+					"#4A587F",
+					"#7A86A3",
+					"#B3BCD0",
+					"#E2E6EB"
+				]
+			},
+			"tab-inactive": {
+				"canonical": "#8A8F98",
+				"displayName": "Tab Ghost",
+				"role": "neutral",
+				"tonalRamp": [
+					"#1F2329",
+					"#4A5058",
+					"#6B7280",
+					"#8A8F98",
+					"#9AA0A8",
+					"#C9CDD3",
+					"#E8ECF1",
+					"#F5F7FA"
+				]
+			},
+			"tang-orange": {
+				"canonical": "#FF9F1C",
+				"displayName": "Tang Orange",
+				"role": "tertiary",
+				"tonalRamp": [
+					"#4A2C00",
+					"#7A4A00",
+					"#A86600",
+					"#D18400",
+					"#FF9F1C",
+					"#FFB955",
+					"#FFD08E",
+					"#FFE9C6"
+				]
+			},
+			"whatsapp": {
+				"canonical": "#25D366",
+				"displayName": "WhatsApp Green",
+				"role": "neutral",
+				"tonalRamp": [
+					"#063B1D",
+					"#0C5C2E",
+					"#127A3E",
+					"#189A4F",
+					"#25D366",
+					"#55DE85",
+					"#88E8A8",
+					"#BBF2CB"
+				]
+			},
+			"white": {
+				"canonical": "#FFFFFF",
+				"displayName": "White",
+				"role": "secondary",
+				"tonalRamp": [
+					"#C9CDD3",
+					"#E2E6EB",
+					"#E8ECF1",
+					"#F1F2F4",
+					"#F5F7FA",
+					"#FAFBFC",
+					"#FFFFFF",
+					"#FFFFFF"
+				]
+			}
+		},
+		"motion": [
+			{
+				"name": "press-pop",
+				"purpose": "Every tappable squashes on press; the whole interaction language on native.",
+				"value": "transform scale(0.97) + opacity 0.8–0.9, ~150ms ease-out"
+			},
+			{
+				"name": "modal-fade",
+				"purpose": "Preview modals fade in; dismiss reverses the entrance.",
+				"value": "opacity 0→1, ~200ms ease-out"
+			},
+			{
+				"name": "sheet-slide",
+				"purpose": "Sticker sheet rises as a bottom sheet; honor Reduce Motion with a crossfade.",
+				"value": "translateY 100%→0, ~250ms ease-out"
+			}
+		],
+		"shadows": [
+			{
+				"name": "sticker-lift",
+				"purpose": "Peelable lift under sticker cells, hero cards, empty states, FAB, and action pills.",
+				"value": "0 4px 12px rgba(11,21,51,0.12)"
+			},
+			{
+				"name": "tile-whisper",
+				"purpose": "Faint lift under unselected style tiles only.",
+				"value": "0 1px 3px rgba(11,21,51,0.12)"
+			},
+			{
+				"name": "scrim",
+				"purpose": "Full-screen modal dim. No blur, no glass.",
+				"value": "rgba(11,21,51,0.70)"
+			}
+		],
+		"typographyMeta": {
+			"body": {
+				"displayName": "Body",
+				"purpose": "Subtitles at 15px Medium muted; hints at 13px Regular muted."
+			},
+			"display": {
+				"displayName": "Display",
+				"purpose": "Screen titles only: Crea un Sticker, Mis Stickers, sheet masthead."
+			},
+			"headline": {
+				"displayName": "Headline",
+				"purpose": "Hero tagline and section headings; empty-state titles."
+			},
+			"label": {
+				"displayName": "Label",
+				"purpose": "Buttons, chips, captions, tab labels, toggles."
+			},
+			"title": {
+				"displayName": "Title",
+				"purpose": "Preview names and card titles; button labels at 17px Semibold."
+			}
+		}
+	},
+	"generatedAt": "2026-09-11T10:00:00.000Z",
+	"narrative": {
+		"dos": [
+			"Do style with Uniwind `className` and `@theme` tokens (`bg-pop-yellow`, `text-pop-navy`, `border-pop-navy`); extend `@theme` to add a color.",
+			"Do keep every sticker die-cut: white border, navy outline where framed, soft lift shadow.",
+			"Do keep one yellow primary action per screen and full-width hero CTAs (`w-full`, `mt-[18px]` rhythm).",
+			"Do use `font-poppins-*` weight tokens and `Poppins_700Bold` directly for `tabBarLabelStyle`.",
+			"Do lay out inside safe-area insets and extend the tab bar by the live bottom inset on Android edge-to-edge.",
+			"Do keep press feedback on every tappable (`active:scale-[0.97]` / `active:opacity-80/90`).",
+			"Do honor Reduce Motion / Remove animations with the existing fade modals and instant cuts."
+		],
+		"donts": [
+			"Don't use `StyleSheet.create` for layout or component styling — reserve style objects for `tabBarStyle`, ViewShot wrappers, icon colors, spinners, and truly dynamic values (documented inline where used).",
+			"Don't hardcode hex in `className` (one-off system shades like `#F1F2F4` are the only exception); never invent a new brand hex.",
+			"Don't combine a custom Poppins family with `font-bold` — it breaks on Android.",
+			"Don't ship hover-only affordances, web-shaped buttons, custom global nav, or reinvented switches/dialogs — use platform sheets, alerts, and action patterns.",
+			"Don't use dark-heavy screens, thin typography, complex gradients, or glassmorphism; the world is light, chunky, and flat-with-pop-lift.",
+			"Don't redesign the yellow winking mascot or promote sheet-cream, WhatsApp green, or error red into general surfaces.",
+			"Don't fabricate testimonials, counts, press, or proof — empty states stay honest (`¡Aún no hay stickers!` + Crear Sticker)."
+		],
+		"keyCharacteristics": [
+			"Sticker logic everywhere: white borders, navy outlines, soft lift",
+			"One yellow hero action per screen; everything else is white or navy",
+			"Chunky Poppins at every role; weight is baked into the family",
+			"Flat surfaces at rest; shadows only confirm touch and lift stickers"
+		],
+		"northStar": "Pop! Instant Joy",
+		"overview": "StickerPop is a die-cut playground, not a photo editor. Every screen behaves like a sticker sheet: chunky outlines, soft lift, confetti accents, and one yellow button that begs to be tapped. The interface recedes so the user's face — turned into eight laughing emotions — is always the hero. The philosophy is playful and instant: thick navy contours carry structure, white die-cut borders carry charm, and motion never lingers longer than a pop. Nothing here whispers corporate, whispers luxury, or hides behind glass; it is a premium children's-consumer craft with generous spacing, confident headings, and zero chrome between idea and laugh.",
+		"rules": [
+			{
+				"body": "One yellow primary action per screen. Its rarity is the point; everything else stays white or navy.",
+				"name": "The One Yellow Rule",
+				"section": "colors"
+			},
+			{
+				"body": "If it draws a boundary — card, button, tab bar, tile — the boundary is navy. Gray borders mean unselected or disabled, never a third voice.",
+				"name": "The Navy Carries Structure Rule",
+				"section": "colors"
+			},
+			{
+				"body": "Use `font-poppins-regular/medium/semibold/bold/extrabold/black` tokens; never `font-bold` with a custom family — it breaks on Android.",
+				"name": "The Baked-Weight Rule",
+				"section": "typography"
+			},
+			{
+				"body": "Headings and buttons are navy or white-on-navy. Muted gray is for subtitles and hints only, never for primary actions.",
+				"name": "The Navy-First Type Rule",
+				"section": "typography"
+			},
+			{
+				"body": "Surfaces are flat at rest. Lift appears only on stickers, raised actions, and open modals — never as page decoration.",
+				"name": "The Flat-By-Default Rule",
+				"section": "elevation"
+			}
+		]
+	},
+	"schemaVersion": 2,
+	"title": "Design System: StickerPop"
+}
