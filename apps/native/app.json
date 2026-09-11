@@ -54,11 +54,15 @@
 						"backgroundColor": "#FFD600"
 					}
 				}
-			]
+			],
+			"./plugins/withWhatsAppStickerProvider"
 		],
 		"experiments": {
 			"typedRoutes": true,
-			"reactCompiler": true
+			"reactCompiler": true,
+			"inlineModules": {
+				"watchedDirectories": ["modules"]
+			}
 		}
 	}
 }

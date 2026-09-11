@@ -33,9 +33,9 @@ import { shareImageFile, shareImageToWhatsApp } from "@/lib/share";
 import { STICKER_EMOTIONS, type StickerStyleId } from "@/lib/sticker-styles";
 import { saveSticker } from "@/lib/stickers-store";
 import {
+	exportPackToWhatsApp,
 	exportSingleSticker,
 	exportStickerPack,
-	shareFile,
 	shareWebpFile,
 } from "@/lib/whatsapp";
 
@@ -346,10 +346,7 @@ export default function CreateScreen() {
 				);
 				return;
 			}
-			await shareFile(pack.archiveUri, {
-				mimeType: "application/octet-stream",
-				dialogTitle: t("whatsapp.packDialog"),
-			});
+			await exportPackToWhatsApp(pack, t("whatsapp.packDialog"));
 			Alert.alert(
 				t("whatsapp.successTitle"),
 				pack.stickers.length < pack.sourceCount

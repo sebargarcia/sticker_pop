@@ -3,6 +3,11 @@ import * as FileSystem from "expo-file-system/legacy";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import * as Sharing from "expo-sharing";
 
+import i18n from "./i18n";
+import {
+	addStickerPackToWhatsApp,
+	canAddStickerPackToWhatsApp,
+} from "./whatsapp-native";
 import { createZip, type ZipEntry } from "./zip";
 
 /**
@@ -14,11 +19,15 @@ import { createZip, type ZipEntry } from "./zip";
  * - pack: 3-30 stickers, all static (we only produce static)
  *
  * This module converts the app's PNG stickers (Gemini output or saved files)
- * into spec-compliant WebP files, groups them into a pack folder with a
- * WhatsApp `contents.json` manifest and packs that folder into a `.wasticker`
- * archive (a ZIP) that the system sheet can hand to WhatsApp / a sticker app.
- * Sharing stays image-based (`lib/share.ts` is untouched) — this is the
- * separate "valid WhatsApp sticker" path.
+ * into spec-compliant WebP files and groups them into a pack folder with a
+ * WhatsApp `contents.json` manifest.
+ *
+ * On Android the pack folder is served to WhatsApp by the native
+ * `StickerContentProvider` (see `modules/whatsapp/`) and `exportPackToWhatsApp`
+ * opens WhatsApp's "add pack" preview. Everywhere else there is no direct
+ * install path, so the folder is zipped into a `.wasticker` archive and shared
+ * via the system sheet. Sharing stays image-based (`lib/share.ts` is untouched)
+ * — this is the separate "valid WhatsApp sticker" path.
  */
 
 export const WHATSAPP_STICKER_SIZE = 512;
@@ -331,4 +340,36 @@ export function shareWebpFile(
 		dialogTitle,
 		UTI: "org.webmproject.webp",
 	});
+}
+
+/**
+ * Hands a finished pack to WhatsApp.
+ *
+ * Android builds with the native ContentProvider module get WhatsApp's "add
+ * sticker pack" preview, and throw a user-readable error when WhatsApp (or
+ * WhatsApp Business) is missing — a shared `.wasticker` can't be imported by
+ * WhatsApp, so there is no useful fallback there. Everywhere else (iOS, or an
+ * Android build without the module) the `.wasticker` archive is shared through
+ * the system sheet.
+ */
+export async function exportPackToWhatsApp(
+	pack: WhatsAppPack,
+	dialogTitle: string,
+): Promise<"whatsapp" | "shared"> {
+	if (canAddStickerPackToWhatsApp()) {
+		try {
+			await addStickerPackToWhatsApp(pack.id, pack.name);
+			return "whatsapp";
+		} catch (e) {
+			if ((e as { code?: string }).code === "ERR_WHATSAPP_NOT_INSTALLED") {
+				throw new Error(i18n.t("whatsapp.notInstalledMessage"));
+			}
+			throw e;
+		}
+	}
+	await shareFile(pack.archiveUri, {
+		mimeType: "application/wasticker",
+		dialogTitle,
+	});
+	return "shared";
 }

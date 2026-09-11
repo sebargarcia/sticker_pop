@@ -23,9 +23,9 @@ import {
 	type SavedSticker,
 } from "@/lib/stickers-store";
 import {
+	exportPackToWhatsApp,
 	exportSingleSticker,
 	exportStickerPack,
-	shareFile,
 	shareWebpFile,
 } from "@/lib/whatsapp";
 
@@ -136,10 +136,7 @@ export default function MyStickersScreen() {
 				);
 				return;
 			}
-			await shareFile(pack.archiveUri, {
-				mimeType: "application/octet-stream",
-				dialogTitle: t("whatsapp.packDialog"),
-			});
+			await exportPackToWhatsApp(pack, t("whatsapp.packDialog"));
 			Alert.alert(
 				t("whatsapp.successTitle"),
 				pack.stickers.length < pack.sourceCount

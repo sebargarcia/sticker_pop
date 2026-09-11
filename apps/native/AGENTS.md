@@ -43,6 +43,11 @@ Monorepo workspace (`bun`, `turbo`); this guide is scoped to `apps/native`.
 - `app/` — expo-router routes. Root `Stack` → `(tabs)` (no drawer): `index` (Home), `create` (Create), `my-stickers` (My Stickers). `+not-found.tsx` is a scaffold leftover.
 - `components/` — `sticker-pop-button.tsx`, `style-carousel.tsx`, `sticker-grid.tsx`, `sticker-sheet.tsx` (StickerPop UI). `container.tsx` is a scaffold leftover (used by `+not-found.tsx`).
 - `lib/` — `gemini.ts` (generation API), `sticker-styles.ts` (9 styles + 8 emotions, local assets), `stickers-store.ts` (AsyncStorage index + FileSystem files), `image-utils.ts` (base64 helpers), `theme.ts` (hex constants — see Styling), `auth-client.ts` (Better-Auth, unused by v1).
+- `modules/` — inline Expo native modules (Android). `whatsapp/StickerContentProvider.kt`
+  serves the exported pack to WhatsApp; `whatsapp/StickerPopWhatsAppModule.kt` opens
+  WhatsApp's add-pack preview. Wired by `experiments.inlineModules.watchedDirectories`
+  in `app.json`. `plugins/withWhatsAppStickerProvider.js` adds the provider's manifest
+  entry. Both are compiled into native builds — no JS import path.
 - `assets/stickers/` — copied from `docs/assets` (`sticker_pop_logo.png` + 9 style thumbs). Loaded via `require()`, never remote URLs.
 
 ## Styling — Uniwind (mandatory)
@@ -115,15 +120,24 @@ Rules for all new/edited UI code:
   to the system sheet (`expo-sharing`, WhatsApp appears there too) when WhatsApp is
   missing. `shareImageFile` is the generic sheet. After adding any native module,
   rebuild the dev client (`bun run android` / `bun run ios`).
-- WhatsApp sticker export: `lib/whatsapp.ts` — converts PNGs to spec-compliant
+- WhatsApp sticker export: `lib/whatsapp.ts` converts PNGs to spec-compliant
   stickers (512x512 WebP ≤ 100 KB via `expo-image-manipulator`, adaptive quality
-  steps; 96x96 PNG tray ≤ 50 KB; packs cap at 30 stickers) into
+  steps; 96x96 PNG tray ≤ 50 KB; 3–30 per pack) into
   `FileSystem.documentDirectory/whatsapp/pack/` with a WhatsApp `contents.json`
-  manifest, then zips it into `whatsapp/StickerPop.wasticker` (`lib/zip.ts`, a
-  STORE-method ZIP writer). Single stickers share via `shareWebpFile`
-  (`image/webp` system sheet); packs share the `.wasticker` archive via
-  `shareFile` for WhatsApp / a sticker app. `expo-image-manipulator` is a
-  native module — rebuild the dev client after install.
+  manifest. On Android `exportPackToWhatsApp` opens WhatsApp's "add sticker pack"
+  preview instead of sharing a file:   `StickerContentProvider` (authority
+  `<package>.stickercontentprovider`, read permission `com.whatsapp.sticker.READ`)
+  serves the pack straight from disk, and `StickerPopWhatsAppModule` fires
+  `com.whatsapp.intent.action.ENABLE_STICKER_PACK` (falling back to WhatsApp
+  Business's `w4b` action). When neither app is installed it throws the
+  localized `whatsapp.notInstalledMessage` — no sheet fallback, since WhatsApp
+  cannot import a `.wasticker` file. Everywhere else (iOS, or an
+  Android build without the module) the pack is zipped into
+  `whatsapp/StickerPop.wasticker` (`lib/zip.ts`) and shared via `shareFile`. Single
+  stickers share via `shareWebpFile`. WhatsApp has no file-based import — only this
+  ContentProvider contract. `expo-image-manipulator` and the inline Kotlin modules
+  are native: rebuild (`bun run android`) after changing them, and run
+  `bunx expo prebuild` after changing `app.json`/`plugins/`.
 - Sheet export: `react-native-view-shot` `capture()` (view must be mounted/visible). Permissions live in `app.json` plugin configs.
 
 ## Conventions
